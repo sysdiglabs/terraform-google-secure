@@ -1,8 +1,14 @@
-# template-repository
+# Sysdig Secure for Cloud in Google
 
-This repository is used as the default template for Team Cloud Native projects in sysdiglabs.
+Terraform module that deploys the Sysdig Secure for Cloud stack in GCP.
 
-Change the README title and contents to fit your project.
+Provides unified threat-detection, compliance, forensics and analysis through these major components:
+
+CSPM: It evaluates periodically your cloud configuration, using Cloud Custodian, against some benchmarks and returns the results and remediation you need to fix. Managed through trust-relationship module.
+
+For other Cloud providers check: AWS, Azure
+
+
 
 ## Common requirements
 
