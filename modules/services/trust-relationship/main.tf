@@ -56,10 +56,9 @@ resource "google_project_iam_custom_role" "custom" {
     "iam.serviceAccounts.get",
     "iam.serviceAccounts.getIamPolicy",
     "iam.serviceAccounts.list",
-    "resourcemanager.projects.get",
-    "resourcemanager.projects.list",
     "iam.roles.get",
     "iam.roles.list",
+    "resourcemanager.projects.get",
     "resourcemanager.projects.getIamPolicy"
   ]
 }

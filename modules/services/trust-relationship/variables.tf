@@ -6,7 +6,7 @@ variable "project_id" {
 variable "service_account_name" {
   type        = string
   description = "The name of the Service Account that will be created."
-  default     = "sysdigsecure"
+  default     = "sysdig-secure"
 }
 
 variable "is_organizational" {

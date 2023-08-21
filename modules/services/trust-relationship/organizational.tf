@@ -58,13 +58,13 @@ resource "google_organization_iam_custom_role" "custom" {
     "iam.serviceAccounts.get",
     "iam.serviceAccounts.getIamPolicy",
     "iam.serviceAccounts.list",
-    "resourcemanager.projects.get",
-    "resourcemanager.projects.list",
     "iam.roles.get",
     "iam.roles.list",
     "resourcemanager.organizations.get",
     "resourcemanager.organizations.getIamPolicy",
-    "resourcemanager.projects.getIamPolicy"
+    "resourcemanager.projects.get",
+    "resourcemanager.projects.getIamPolicy",
+    "resourcemanager.projects.list"
   ]
 }
 
