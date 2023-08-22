@@ -3,7 +3,7 @@
 ###################################################
 
 data "google_organization" "org" {
-  count = var.is_organizational ? 1 : 0
+  count  = var.is_organizational ? 1 : 0
   domain = var.organization_domain
 }
 
@@ -15,7 +15,7 @@ data "google_organization" "org" {
 # role permissions for onboarding
 #---------------------------------
 resource "google_organization_iam_member" "browser" {
-  count = var.is_organizational ? 1 : 0
+  count  = var.is_organizational ? 1 : 0
   org_id = data.google_organization.org[0].org_id
 
   role   = "roles/browser"
@@ -26,7 +26,7 @@ resource "google_organization_iam_member" "browser" {
 # role permissions for CSPM
 #----------------------------
 resource "google_organization_iam_member" "cloudasset_viewer" {
-  count = var.is_organizational ? 1 : 0
+  count  = var.is_organizational ? 1 : 0
   org_id = data.google_organization.org[0].org_id
 
   role   = "roles/cloudasset.viewer"
@@ -37,7 +37,7 @@ resource "google_organization_iam_member" "cloudasset_viewer" {
 # role permissions for CIEM
 #----------------------------
 resource "google_organization_iam_member" "recommender_viewer" {
-  count = var.is_organizational ? 1 : 0
+  count  = var.is_organizational ? 1 : 0
   org_id = data.google_organization.org[0].org_id
 
   role   = "roles/recommender.viewer"
@@ -46,7 +46,7 @@ resource "google_organization_iam_member" "recommender_viewer" {
 
 # custom role for CIEM
 resource "google_organization_iam_custom_role" "custom" {
-  count = var.is_organizational ? 1 : 0
+  count  = var.is_organizational ? 1 : 0
   org_id = data.google_organization.org[0].org_id
 
   role_id     = "admin.directory.group.readonly"
@@ -69,7 +69,7 @@ resource "google_organization_iam_custom_role" "custom" {
 }
 
 resource "google_organization_iam_member" "custom" {
-  count = var.is_organizational ? 1 : 0
+  count  = var.is_organizational ? 1 : 0
   org_id = data.google_organization.org[0].org_id
 
   role   = google_organization_iam_custom_role.custom[0].id

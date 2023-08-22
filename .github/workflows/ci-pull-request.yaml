@@ -8,19 +8,38 @@ env:
   GO_VERSION: "^1.20"
 
 jobs:
-  build-and-test:
-    name: Build and Test
+  format:
+    name: Format
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v2
+      - run: make fmt
 
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
     steps:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
         go-version: ${{ env.GO_VERSION }}
-
     - name: Check out code
       uses: actions/checkout@v2
+    - name: Lint
+      run: make lint
 
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ env.GO_VERSION }}
+    - name: Check out code
+      uses: actions/checkout@v2
     - name: Cache modules
       uses: actions/cache@v1
       with:
@@ -28,28 +47,11 @@ jobs:
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
-
     - name: Get dependencies
       run: |
         go install github.com/onsi/ginkgo/ginkgo@latest
-
     # Check if we need to build any go packages in this repo. If not, remove below.
     # - name: Build
     #   run: go build ./...
-
     - name: Test
       run: make test
-
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-
-    - name: Lint
-      continue-on-error: true
-      uses: golangci/golangci-lint-action@v1
-      with:
-        version: v1.27

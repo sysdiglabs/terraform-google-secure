@@ -13,7 +13,7 @@ resource "google_service_account" "sa" {
 # role permissions for onboarding
 #---------------------------------
 resource "google_project_iam_member" "browser" {
-  count = var.is_organizational ? 0 : 1
+  count   = var.is_organizational ? 0 : 1
   project = var.project_id
 
   role   = "roles/browser"
@@ -24,7 +24,7 @@ resource "google_project_iam_member" "browser" {
 # role permissions for CSPM
 #----------------------------
 resource "google_project_iam_member" "cloudasset_viewer" {
-  count = var.is_organizational ? 0 : 1
+  count   = var.is_organizational ? 0 : 1
   project = var.project_id
 
   role   = "roles/cloudasset.viewer"
@@ -35,7 +35,7 @@ resource "google_project_iam_member" "cloudasset_viewer" {
 # role permissions for CIEM
 #----------------------------
 resource "google_project_iam_member" "recommender_viewer" {
-  count = var.is_organizational ? 0 : 1
+  count   = var.is_organizational ? 0 : 1
   project = var.project_id
 
   role   = "roles/recommender.viewer"
@@ -44,10 +44,10 @@ resource "google_project_iam_member" "recommender_viewer" {
 
 # custom role for CIEM
 resource "google_project_iam_custom_role" "custom" {
-  count = var.is_organizational ? 0 : 1
+  count   = var.is_organizational ? 0 : 1
   project = var.project_id
 
-  role_id     = "admin.directory.group.readonly"
+  role_id     = "ravina.test.admin.directory.group.readonly"
   title       = "Sysdig Cloud Trust Relationship Role"
   description = "A Role providing the required permissions for Sysdig Cloud that are not included in predefined roles."
   permissions = [
@@ -64,7 +64,7 @@ resource "google_project_iam_custom_role" "custom" {
 }
 
 resource "google_project_iam_member" "custom" {
-  count = var.is_organizational ? 0 : 1
+  count   = var.is_organizational ? 0 : 1
   project = var.project_id
 
   role   = google_project_iam_custom_role.custom[0].id
