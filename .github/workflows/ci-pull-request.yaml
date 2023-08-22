@@ -31,7 +31,7 @@ jobs:
 
     - name: Get dependencies
       run: |
-        go install github.com/onsi/ginkgo/ginkgo
+        go install github.com/onsi/ginkgo/ginkgo@latest
 
     - name: Build
       run: go build ./...
