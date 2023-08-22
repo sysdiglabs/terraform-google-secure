@@ -6,4 +6,5 @@ output "service_account_email" {
 output "service_account_key" {
   value       = google_service_account_key.secure_service_account_key.private_key
   description = "Private Key of the Service Account created"
+  sensitive   = true
 }
