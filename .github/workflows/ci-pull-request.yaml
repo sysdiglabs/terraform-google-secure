@@ -4,6 +4,8 @@ on:
   pull_request:
     branches:
     - master
+env:
+  GO_VERSION: "^1.20"
 
 jobs:
   build-and-test:
@@ -14,7 +16,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: ^1.14
+        go-version: ${{ env.GO_VERSION }}
 
     - name: Check out code
       uses: actions/checkout@v2
@@ -29,7 +31,7 @@ jobs:
 
     - name: Get dependencies
       run: |
-        go get github.com/onsi/ginkgo/ginkgo
+        go install github.com/onsi/ginkgo/ginkgo
 
     - name: Build
       run: go build ./...
