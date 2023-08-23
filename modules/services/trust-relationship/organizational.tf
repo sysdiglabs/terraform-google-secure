@@ -14,64 +14,32 @@ data "google_organization" "org" {
 #---------------------------------
 # role permissions for onboarding
 #---------------------------------
-resource "google_organization_iam_member" "browser" {
-  count  = var.is_organizational ? 1 : 0
-  org_id = data.google_organization.org[0].org_id
+resource "google_organization_iam_member" "onboarding_role" {
+  count = var.is_organizational ? 1 : 0
 
+  org_id = data.google_organization.org[0].org_id
   role   = "roles/browser"
   member = "serviceAccount:${google_service_account.sa.email}"
 }
 
-#----------------------------
-# role permissions for CSPM
-#----------------------------
-resource "google_organization_iam_member" "cloudasset_viewer" {
-  count  = var.is_organizational ? 1 : 0
-  org_id = data.google_organization.org[0].org_id
+#--------------------------------------------------------------------------------------
+# role permissions for CSPM (GCP Predefined Roles for Sysdig Cloud Trust Relationship)
+#--------------------------------------------------------------------------------------
+resource "google_organization_iam_member" "trust_relationship_role" {
+  for_each = var.is_organizational ? toset(["roles/cloudasset.viewer", "roles/recommender.iamViewer", "roles/resourcemanager.organizationViewer"]) : []
 
-  role   = "roles/cloudasset.viewer"
+  org_id = data.google_organization.org[0].org_id
+  role   = each.key
   member = "serviceAccount:${google_service_account.sa.email}"
 }
 
-#----------------------------
-# role permissions for CIEM
-#----------------------------
-resource "google_organization_iam_member" "recommender_viewer" {
-  count  = var.is_organizational ? 1 : 0
+#---------------------------------------------------------------------------------------
+# role permissions for CIEM (GCP Predefined Roles for Sysdig Cloud Identity Management)
+#---------------------------------------------------------------------------------------
+resource "google_organization_iam_member" "identity_mgmt_role" {
+  for_each = var.is_organizational ? toset(["roles/recommender.viewer", "roles/iam.serviceAccountViewer", "roles/iam.organizationRoleViewer"]) : []
+
   org_id = data.google_organization.org[0].org_id
-
-  role   = "roles/recommender.viewer"
-  member = "serviceAccount:${google_service_account.sa.email}"
-}
-
-# custom role for CIEM
-resource "google_organization_iam_custom_role" "custom" {
-  count  = var.is_organizational ? 1 : 0
-  org_id = data.google_organization.org[0].org_id
-
-  role_id     = "admin.directory.group.readonly"
-  title       = "Sysdig Cloud Trust Relationship Role"
-  description = "A Role providing the required permissions for Sysdig Cloud that are not included in predefined roles."
-  permissions = [
-    "iam.serviceAccountKeys.get",
-    "iam.serviceAccountKeys.list",
-    "iam.serviceAccounts.get",
-    "iam.serviceAccounts.getIamPolicy",
-    "iam.serviceAccounts.list",
-    "iam.roles.get",
-    "iam.roles.list",
-    "resourcemanager.organizations.get",
-    "resourcemanager.organizations.getIamPolicy",
-    "resourcemanager.projects.get",
-    "resourcemanager.projects.getIamPolicy",
-    "resourcemanager.projects.list"
-  ]
-}
-
-resource "google_organization_iam_member" "custom" {
-  count  = var.is_organizational ? 1 : 0
-  org_id = data.google_organization.org[0].org_id
-
-  role   = google_organization_iam_custom_role.custom[0].id
+  role   = each.key
   member = "serviceAccount:${google_service_account.sa.email}"
 }
