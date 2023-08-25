@@ -23,7 +23,7 @@ resource "google_project_iam_member" "onboarding_role" {
 # role permissions for CSPM (GCP Predefined Roles for Sysdig Cloud Trust Relationship)
 #--------------------------------------------------------------------------------------
 resource "google_project_iam_member" "trust_relationship_role" {
-  for_each = var.is_organizational ? [] : toset(["roles/cloudasset.viewer", "roles/recommender.iamViewer"])
+  for_each = var.is_organizational ? [] : toset(["roles/cloudasset.viewer"])
 
   project = var.project_id
   role    = each.key
