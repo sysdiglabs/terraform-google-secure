@@ -1,5 +1,5 @@
 output "project_id" {
-  value       = data.google_project.project.id
+  value       = data.google_project.target_project.id
   description = "GCP Project Identifier"
 }
 
@@ -9,6 +9,6 @@ output "push_subscription_service_account" {
 }
 
 output "push_endpoint" {
-  value       = google_pubsub_subscription.ingestion_topic_push_subscription.push_config.push_endpoint
+  value       = google_pubsub_subscription.ingestion_topic_push_subscription.push_config[0].push_endpoint
   description = "Push endpoint towards which the POST request will be directed"
 }

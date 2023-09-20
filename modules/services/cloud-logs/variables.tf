@@ -12,7 +12,7 @@ variable "labels" {
   type        = map(string)
   description = "(Optional) Labels to be associated with Sysdig-originated resources"
   default = {
-    originator = "Sysdig"
+    originator = "sysdig"
   }
 }
 

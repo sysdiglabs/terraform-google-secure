@@ -15,6 +15,7 @@ provider "google" {
 #     - Cloud Pub/Sub API
 #     - Identity and Access Management (IAM) API
 #     - IAM Service Account Credentials API
+#     - Cloud Resource Manager API
 #
 # Given that, this module will take care of enabling the AuditLogs for the selected
 # project, direct them to a dedicated PubSub through a Sink and finally creating a Push
@@ -23,6 +24,13 @@ provider "google" {
 # pushing logs to Sysdig's system.
 ########################################################################################
 
+#-------------#
+# GCP Project #
+#-------------#
+#
+data "google_project" "target_project" {
+  project_id = var.project_id
+}
 
 #------------#
 # Audit Logs #
@@ -92,7 +100,7 @@ resource "google_pubsub_topic" "deadletter_topic" {
 #-------------------#
 
 resource "google_service_account" "push_auth" {
-  account_id   = "ingestion_topic_push_auth"
+  account_id   = "ingestion-topic-push-auth"
   display_name = "Push Auth Service Account"
 }
 
