@@ -5,7 +5,7 @@ provider "google" {
 }
 
 ########################################################################################
-# The pubsub module takes care of provisioning the necessary resources to make Sysdig's
+# The cloud-logs module takes care of provisioning the necessary resources to make Sysdig's
 # backend able to ingest data from a single GCP project.
 #
 # Before applying the changes defined in this module, the following operations need to
