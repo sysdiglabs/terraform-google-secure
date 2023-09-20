@@ -112,7 +112,6 @@ resource "google_pubsub_subscription" "ingestion_topic_push_subscription" {
   ack_deadline_seconds       = var.ack_deadline_seconds
   message_retention_duration = var.message_retention_duration
 
-
   push_config {
     push_endpoint = var.push_endpoint
 
