@@ -1,3 +1,4 @@
+# TODO(jojo): Remove the provider declaration
 provider "google" {
   project = var.project_id
   region  = "us-central1"
@@ -22,12 +23,57 @@ provider "google" {
 # pushing logs to Sysdig's system.
 ########################################################################################
 
-data "google_project" "project" {
-  project_id = var.project_id
+
+#------------#
+# Audit Logs #
+#------------#
+
+resource "google_project_iam_audit_config" "project" {
+  project = var.project_id
+  service = "allServices"
+
+  audit_log_config {
+    log_type = "ADMIN_READ"
+  }
+
+  audit_log_config {
+    log_type = "DATA_READ"
+  }
+
+  audit_log_config {
+    log_type = "DATA_WRITE"
+  }
 }
 
-resource "google_pubsub_topic" "cloudingestion-topic" {
-  name = "cloudingestion-topic"
+#------#
+# Sink #
+#------#
+
+resource "google_logging_project_sink" "cloudingestion-sink" {
+  name        = "${google_pubsub_topic.ingestion_topic.name}-sink"
+  description = "Sysdig sink to direct the AuditLogs to the PubSub topic used for data gathering"
+
+  # NOTE(jojo): Our preferred destination is a PubSub topic
+  destination = "pubsub.googleapis.com/projects/${var.project_id}/topics/${google_pubsub_topic.ingestion_topic.name}"
+
+  filter = "protoPayload.@type = \"type.googleapis.com/google.cloud.audit.AuditLog\""
+
+  unique_writer_identity = true
+}
+
+resource "google_pubsub_topic_iam_member" "writer" {
+  project = google_pubsub_topic.ingestion_topic.project
+  topic   = google_pubsub_topic.ingestion_topic.name
+  role    = "roles/pubsub.publisher"
+  member  = google_logging_project_sink.cloudingestion-sink.writer_identity
+}
+
+#-----------------#
+# Ingestion topic #
+#-----------------#
+
+resource "google_pubsub_topic" "ingestion_topic" {
+  name = "ingestion_topic"
 
   # TODO(jojo): Verify which labels we need
   labels = {
@@ -38,30 +84,34 @@ resource "google_pubsub_topic" "cloudingestion-topic" {
   message_retention_duration = "86600s"
 }
 
-resource "google_pubsub_topic" "deadletter-topic" {
-  name = "dl-${google_pubsub_topic.cloudingestion-topic.name}"
+resource "google_pubsub_topic" "deadletter_topic" {
+  name = "dl-${google_pubsub_topic.ingestion_topic.name}"
 
   project                    = var.project_id
   message_retention_duration = "86600s"
 }
 
-resource "google_service_account" "push-auth" {
-  account_id   = "sysdig-push-auth"
+#-------------------#
+# Push Subscription #
+#-------------------#
+
+resource "google_service_account" "push_auth" {
+  account_id   = "sysdig_push_auth"
   display_name = "Push Auth Service Account"
 }
 
-resource "google_service_account_iam_binding" "push-auth-binding" {
-  service_account_id = google_service_account.push-auth.name
+resource "google_service_account_iam_binding" "push_auth-binding" {
+  service_account_id = google_service_account.push_auth.name
   role               = "roles/iam.serviceAccountTokenCreator"
 
   members = [
-    "serviceAccount:${google_service_account.push-auth.email}",
+    "serviceAccount:${google_service_account.push_auth.email}",
   ]
 }
 
 resource "google_pubsub_subscription" "cloudingestion-push-subscription" {
-  name  = "${google_pubsub_topic.cloudingestion-topic.name}-push-subscription"
-  topic = google_pubsub_topic.cloudingestion-topic.name
+  name  = "${google_pubsub_topic.ingestion_topic.name}-push-subscription"
+  topic = google_pubsub_topic.ingestion_topic.name
 
   ack_deadline_seconds = 60
 
@@ -80,7 +130,7 @@ resource "google_pubsub_subscription" "cloudingestion-push-subscription" {
     }
 
     oidc_token {
-      service_account_email = google_service_account.push-auth.email
+      service_account_email = google_service_account.push_auth.email
       audience              = "sysdig-secure"
     }
   }
@@ -92,43 +142,8 @@ resource "google_pubsub_subscription" "cloudingestion-push-subscription" {
   }
 
   dead_letter_policy {
-    dead_letter_topic     = google_pubsub_topic.deadletter-topic.id
+    dead_letter_topic     = google_pubsub_topic.deadletter_topic.id
     max_delivery_attempts = 5
   }
 }
 
-resource "google_logging_project_sink" "cloudingestion-sink" {
-  name        = "${google_pubsub_topic.cloudingestion-topic.name}-sink"
-  description = "Sysdig sink to direct the AuditLogs to the PubSub topic used for data gathering"
-
-  # NOTE(jojo): Our preferred destination is a PubSub topic
-  destination = "pubsub.googleapis.com/projects/${var.project_id}/topics/${google_pubsub_topic.cloudingestion-topic.name}"
-
-  filter = "protoPayload.@type = \"type.googleapis.com/google.cloud.audit.AuditLog\""
-
-  unique_writer_identity = true
-}
-
-resource "google_pubsub_topic_iam_member" "writer" {
-  project = google_pubsub_topic.cloudingestion-topic.project
-  topic   = google_pubsub_topic.cloudingestion-topic.name
-  role    = "roles/pubsub.publisher"
-  member  = google_logging_project_sink.cloudingestion-sink.writer_identity
-}
-
-resource "google_project_iam_audit_config" "project" {
-  project = var.project_id
-  service = "allServices"
-
-  audit_log_config {
-    log_type = "ADMIN_READ"
-  }
-
-  audit_log_config {
-    log_type = "DATA_READ"
-  }
-
-  audit_log_config {
-    log_type = "DATA_WRITE"
-  }
-}
