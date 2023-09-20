@@ -28,7 +28,7 @@ provider "google" {
 # Audit Logs #
 #------------#
 
-resource "google_project_iam_audit_config" "project" {
+resource "google_project_iam_audit_config" "audit_config" {
   project = var.project_id
   service = "allServices"
 
@@ -49,23 +49,24 @@ resource "google_project_iam_audit_config" "project" {
 # Sink #
 #------#
 
-resource "google_logging_project_sink" "cloudingestion-sink" {
-  name        = "${google_pubsub_topic.ingestion_topic.name}-sink"
+resource "google_logging_project_sink" "ingestion_sink" {
+  name        = "${google_pubsub_topic.ingestion_topic.name}_sink"
   description = "Sysdig sink to direct the AuditLogs to the PubSub topic used for data gathering"
 
-  # NOTE(jojo): Our preferred destination is a PubSub topic
+  # NOTE: The target destination is a PubSub topic
   destination = "pubsub.googleapis.com/projects/${var.project_id}/topics/${google_pubsub_topic.ingestion_topic.name}"
 
   filter = "protoPayload.@type = \"type.googleapis.com/google.cloud.audit.AuditLog\""
 
+  # NOTE: Used to create a dedicated writer identity and not using the default one
   unique_writer_identity = true
 }
 
-resource "google_pubsub_topic_iam_member" "writer" {
+resource "google_pubsub_topic_iam_member" "publisher_iam_member" {
   project = google_pubsub_topic.ingestion_topic.project
   topic   = google_pubsub_topic.ingestion_topic.name
   role    = "roles/pubsub.publisher"
-  member  = google_logging_project_sink.cloudingestion-sink.writer_identity
+  member  = google_logging_project_sink.ingestion_sink.writer_identity
 }
 
 #-----------------#
@@ -96,11 +97,11 @@ resource "google_pubsub_topic" "deadletter_topic" {
 #-------------------#
 
 resource "google_service_account" "push_auth" {
-  account_id   = "sysdig_push_auth"
+  account_id   = "ingestion_topic_push_auth"
   display_name = "Push Auth Service Account"
 }
 
-resource "google_service_account_iam_binding" "push_auth-binding" {
+resource "google_service_account_iam_binding" "push_auth_binding" {
   service_account_id = google_service_account.push_auth.name
   role               = "roles/iam.serviceAccountTokenCreator"
 
@@ -109,8 +110,8 @@ resource "google_service_account_iam_binding" "push_auth-binding" {
   ]
 }
 
-resource "google_pubsub_subscription" "cloudingestion-push-subscription" {
-  name  = "${google_pubsub_topic.ingestion_topic.name}-push-subscription"
+resource "google_pubsub_subscription" "ingestion_topic_push_subscription" {
+  name  = "${google_pubsub_topic.ingestion_topic.name}_push_subscription"
   topic = google_pubsub_topic.ingestion_topic.name
 
   ack_deadline_seconds = 60
@@ -131,7 +132,7 @@ resource "google_pubsub_subscription" "cloudingestion-push-subscription" {
 
     oidc_token {
       service_account_email = google_service_account.push_auth.email
-      audience              = "sysdig-secure"
+      audience              = "sysdig_secure"
     }
   }
 
