@@ -74,22 +74,17 @@ resource "google_pubsub_topic_iam_member" "publisher_iam_member" {
 #-----------------#
 
 resource "google_pubsub_topic" "ingestion_topic" {
-  name = "ingestion_topic"
-
-  # TODO(jojo): Verify which labels we need
-  labels = {
-    foo = "bar"
-  }
-
+  name                       = "ingestion_topic"
+  labels                     = var.labels
   project                    = var.project_id
-  message_retention_duration = "86600s"
+  message_retention_duration = var.message_retention_duration
 }
 
 resource "google_pubsub_topic" "deadletter_topic" {
   name = "dl-${google_pubsub_topic.ingestion_topic.name}"
 
   project                    = var.project_id
-  message_retention_duration = "86600s"
+  message_retention_duration = var.message_retention_duration
 }
 
 #-------------------#
@@ -111,17 +106,12 @@ resource "google_service_account_iam_binding" "push_auth_binding" {
 }
 
 resource "google_pubsub_subscription" "ingestion_topic_push_subscription" {
-  name  = "${google_pubsub_topic.ingestion_topic.name}_push_subscription"
-  topic = google_pubsub_topic.ingestion_topic.name
+  name                       = "${google_pubsub_topic.ingestion_topic.name}_push_subscription"
+  topic                      = google_pubsub_topic.ingestion_topic.name
+  labels                     = var.labels
+  ack_deadline_seconds       = var.ack_deadline_seconds
+  message_retention_duration = var.message_retention_duration
 
-  ack_deadline_seconds = 60
-
-  message_retention_duration = "604800s"
-
-  # TODO(jojo): Verify which labels we need
-  labels = {
-    foo = "bar"
-  }
 
   push_config {
     push_endpoint = var.push_endpoint
@@ -136,15 +126,14 @@ resource "google_pubsub_subscription" "ingestion_topic_push_subscription" {
     }
   }
 
-  # NOTE(jojo): These are the default values, for now
   retry_policy {
-    minimum_backoff = "10s"
-    maximum_backoff = "600s"
+    minimum_backoff = var.minimum_backoff
+    maximum_backoff = var.maximum_backoff
   }
 
   dead_letter_policy {
     dead_letter_topic     = google_pubsub_topic.deadletter_topic.id
-    max_delivery_attempts = 5
+    max_delivery_attempts = var.max_delivery_attempts
   }
 }
 
