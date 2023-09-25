@@ -1,9 +1,3 @@
-# TODO(jojo): Remove the provider declaration
-provider "google" {
-  project = var.project_id
-  region  = "us-central1"
-}
-
 ########################################################################################
 # The cloud-logs module takes care of provisioning the necessary resources to make Sysdig's
 # backend able to ingest data from a single GCP project.
@@ -27,7 +21,7 @@ provider "google" {
 #-------------#
 # GCP Project #
 #-------------#
-#
+
 data "google_project" "target_project" {
   project_id = var.project_id
 }
