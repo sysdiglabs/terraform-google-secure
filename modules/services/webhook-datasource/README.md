@@ -1,4 +1,4 @@
-# GCP Cloud Logs Module
+# GCP Webhook Datasource Module
 
 This Module creates the resources required to send Project-specific AuditLogs to Sysdig by creating a dedicated Push Subscription tied to a ingestion PubSub topic.
 
