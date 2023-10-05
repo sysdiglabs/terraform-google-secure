@@ -49,6 +49,25 @@ resource "google_project_iam_audit_config" "audit_config" {
   }
 }
 
+resource "google_organization_iam_audit_config" "audit_config" {
+  count = var.is_organizational ? 1 : 0
+
+  org_id  = var.organization_id
+  service = "allServices"
+
+  audit_log_config {
+    log_type = "ADMIN_READ"
+  }
+
+  audit_log_config {
+    log_type = "DATA_READ"
+  }
+
+  audit_log_config {
+    log_type = "DATA_WRITE"
+  }
+}
+
 #-----------------#
 # Ingestion topic #
 #-----------------#
@@ -97,10 +116,8 @@ resource "google_logging_organization_sink" "ingestion_sink" {
   destination = "pubsub.googleapis.com/projects/${var.project_id}/topics/${google_pubsub_topic.ingestion_topic.name}"
   filter      = "protoPayload.@type = \"type.googleapis.com/google.cloud.audit.AuditLog\""
 
-  # TODO(jojo): do we need this?
-  disabled = false
-
-  # TODO(jojo): do we need this?
+  # NOTE: The include_children attribute is set to true in order to ingest data
+  # even from potential sub-organizations
   include_children = true
 }
 
