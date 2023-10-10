@@ -23,14 +23,6 @@
 # all the projects that fall within the organization.
 ########################################################################################
 
-#-------------#
-# GCP Project #
-#-------------#
-
-data "google_project" "target_project" {
-  project_id = var.project_id
-}
-
 #------------#
 # Audit Logs #
 #------------#
