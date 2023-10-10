@@ -16,6 +16,11 @@
 # Subscription that will send the data to Sysdig's backend. This module takes also care
 # of creating the necessary service accounts along with the necessary policies to enable
 # pushing logs to Sysdig's system.
+#
+# Note: The alternative definitions for the organizational variant of this module are contained
+# in organizational.tf. The only differences w.r.t. the standalone template is in using an
+# organizational sink instead of a project-specific one, as well as enabling AuditLogs for
+# all the projects that fall within the organization.
 ########################################################################################
 
 #-------------#
