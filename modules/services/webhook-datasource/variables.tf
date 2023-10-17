@@ -45,3 +45,15 @@ variable "maximum_backoff" {
   description = "(Optional) Maximum backoff time for exponential backoff of the push subscription retry policy"
   default     = "600s"
 }
+
+variable "is_organizational" {
+  description = "(Optional) Set this field to 'true' to deploy secure-for-cloud to a GCP Organization."
+  type        = bool
+  default     = false
+}
+
+variable "organization_domain" {
+  type        = string
+  description = "(Optional) Organization domain. e.g. sysdig.com"
+  default     = ""
+}
