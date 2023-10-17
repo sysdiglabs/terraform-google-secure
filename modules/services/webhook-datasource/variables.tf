@@ -52,7 +52,8 @@ variable "is_organizational" {
   default     = false
 }
 
-variable "organization_id" {
-  description = "(Optional) Your organization ID"
+variable "organization_domain" {
   type        = string
+  description = "(Optional) Organization domain. e.g. sysdig.com"
+  default     = ""
 }

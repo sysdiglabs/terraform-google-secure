@@ -40,6 +40,7 @@ No modules.
 | [google_pubsub_topic_iam_member.publisher_iam_member](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_topic_iam_member) | resource |
 | [google_service_account.push_auth](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account) | resource |
 | [google_service_account_iam_binding.push_auth_binding](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_binding) | resource |
+| [google_organization.org](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/organization) | data source |
 
 ## Inputs
 
@@ -52,7 +53,7 @@ No modules.
 | <a name="input_maximum_backoff"></a> [maximum\_backoff](#input\_maximum\_backoff) | (Optional) Maximum backoff time for exponential backoff of the push subscription retry policy | `string` | `"600s"` | no |
 | <a name="input_message_retention_duration"></a> [message\_retention\_duration](#input\_message\_retention\_duration) | (Optional) How long unacknowledged messages are retained in Sysdig's subscription backlog, from the moment a message is published | `string` | `"604800s"` | no |
 | <a name="input_minimum_backoff"></a> [minimum\_backoff](#input\_minimum\_backoff) | (Optional) Minimum backoff time for exponential backoff of the push subscription retry policy | `string` | `"10s"` | no |
-| <a name="input_organization_id"></a> [organization\_id](#input\_organization\_id) | (Optional) Your organization ID | `string` | n/a | yes |
+| <a name="input_organization_domain"></a> [organization\_domain](#input\_organization\_domain) | Organization domain. e.g. sysdig.com | `string` | `""` | no |
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | (Required) Target Project identifier provided by the customer | `string` | n/a | yes |
 | <a name="input_push_endpoint"></a> [push\_endpoint](#input\_push\_endpoint) | (Required) Final endpoint towards which audit logs POST calls will be directed | `string` | n/a | yes |
 
