@@ -37,7 +37,7 @@ resource "google_organization_iam_member" "cloudasset_viewer" {
 # role permissions for CIEM (GCP Predefined Roles for Sysdig Cloud Identity Management)
 #---------------------------------------------------------------------------------------
 resource "google_organization_iam_member" "identity_mgmt" {
-  for_each = var.is_organizational ? toset(["roles/recommender.viewer", "roles/iam.serviceAccountViewer", "roles/iam.organizationRoleViewer"]) : []
+  for_each = var.is_organizational ? toset(["roles/recommender.viewer", "roles/iam.serviceAccountViewer", "roles/iam.organizationRoleViewer", "roles/container.clusterViewer", "roles/compute.viewer"]) : []
 
   org_id = data.google_organization.org[0].org_id
   role   = each.key
