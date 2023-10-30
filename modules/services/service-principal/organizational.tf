@@ -20,7 +20,8 @@ resource "google_organization_iam_member" "onboarding_posture_identity-mgmt" {
   for_each = var.is_organizational ? toset([
     "roles/browser",
     "roles/cloudasset.viewer", "roles/iam.serviceAccountTokenCreator",
-    "roles/recommender.viewer", "roles/iam.serviceAccountViewer", "roles/iam.organizationRoleViewer", "roles/container.clusterViewer", "roles/compute.viewer"]) : []
+    "roles/recommender.viewer", "roles/iam.serviceAccountViewer", "roles/iam.organizationRoleViewer", "roles/container.clusterViewer", "roles/compute.viewer"
+  ]) : []
 
   org_id = data.google_organization.org[0].org_id
   role   = each.key

@@ -17,7 +17,8 @@ resource "google_project_iam_member" "onboarding_posture_identity-mgmt" {
   for_each = var.is_organizational ? [] : toset([
     "roles/browser",
     "roles/cloudasset.viewer", "roles/iam.serviceAccountTokenCreator",
-    "roles/recommender.viewer", "roles/iam.serviceAccountViewer", "roles/iam.roleViewer", "roles/container.clusterViewer", "roles/compute.viewer"])
+    "roles/recommender.viewer", "roles/iam.serviceAccountViewer", "roles/iam.roleViewer", "roles/container.clusterViewer", "roles/compute.viewer"
+  ])
 
   project = var.project_id
   role    = each.key
