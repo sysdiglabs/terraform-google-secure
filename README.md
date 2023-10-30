@@ -8,7 +8,7 @@ Provides unified threat-detection, compliance, forensics and analysis through th
 
 * **[CIEM](https://docs.sysdig.com/en/docs/sysdig-secure/posture/identity-and-access/)**: Permissions and Entitlements management. Managed through `service-principal` module. <br/>
 
-* **CDR (Cloud Detection and Response)**: It send periodically the Audit Logs collected from a GCP project to Sysdig's systems, this by collecting them in a PubSub topic through a Sink and then sending them through a `PUSH` integration. Managed through `webhook-datasource` module. <br/>
+* **CDR (Cloud Detection and Response)**: It sends periodically the Audit Logs collected from a GCP project/organization to Sysdig's systems, this by collecting them in a PubSub topic through a Sink and then sending them through a `PUSH` integration. Managed through `webhook-datasource` module. <br/>
 
 For other Cloud providers check: [AWS](https://github.com/draios/terraform-aws-secure-for-cloud)
 
