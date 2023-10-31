@@ -23,7 +23,7 @@ resource "google_project_iam_member" "browser" {
 # role permissions for CSPM (GCP Predefined Roles for Sysdig Cloud Secure Posture Management)
 #---------------------------------------------------------------------------------------------
 resource "google_project_iam_member" "cloudasset_viewer" {
-  for_each = var.is_organizational ? [] : toset(["roles/cloudasset.viewer", "roles/iam.serviceAccountTokenCreator"])
+  for_each = var.is_organizational ? [] : toset(["roles/cloudasset.viewer", "roles/iam.serviceAccountTokenCreator", , "roles/logging.viewer"])
 
   project = var.project_id
   role    = each.key
