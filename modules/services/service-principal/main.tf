@@ -17,7 +17,7 @@ resource "null_resource" "delay" {
     command = "sleep 15"
   }
   triggers = {
-    "sa" = "${google_service_account.sa.id}"
+    sa = google_service_account.sa.id
   }
 }
 
