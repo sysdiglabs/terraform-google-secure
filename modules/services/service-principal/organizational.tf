@@ -15,7 +15,8 @@ data "google_organization" "org" {
 # role permissions for onboarding
 #---------------------------------
 resource "google_organization_iam_member" "browser" {
-  count = var.is_organizational ? 1 : 0
+  depends_on = [null_resource.delay]
+  count      = var.is_organizational ? 1 : 0
 
   org_id = data.google_organization.org[0].org_id
   role   = "roles/browser"
@@ -26,7 +27,8 @@ resource "google_organization_iam_member" "browser" {
 # role permissions for CSPM (GCP Predefined Roles for Sysdig Cloud Secure Posture Management)
 #---------------------------------------------------------------------------------------------
 resource "google_organization_iam_member" "cspm" {
-  for_each = var.is_organizational ? toset(["roles/cloudasset.viewer", "roles/iam.serviceAccountTokenCreator", "roles/logging.viewer"]) : []
+  depends_on = [null_resource.delay]
+  for_each   = var.is_organizational ? toset(["roles/cloudasset.viewer", "roles/iam.serviceAccountTokenCreator", "roles/logging.viewer"]) : []
 
   org_id = data.google_organization.org[0].org_id
   role   = each.key
@@ -37,7 +39,8 @@ resource "google_organization_iam_member" "cspm" {
 # role permissions for CIEM (GCP Predefined Roles for Sysdig Cloud Identity Management)
 #---------------------------------------------------------------------------------------
 resource "google_organization_iam_member" "identity_mgmt" {
-  for_each = var.is_organizational ? toset(["roles/recommender.viewer", "roles/iam.serviceAccountViewer", "roles/iam.organizationRoleViewer", "roles/container.clusterViewer", "roles/compute.viewer"]) : []
+  depends_on = [null_resource.delay]
+  for_each   = var.is_organizational ? toset(["roles/recommender.viewer", "roles/iam.serviceAccountViewer", "roles/iam.organizationRoleViewer", "roles/container.clusterViewer", "roles/compute.viewer"]) : []
 
   org_id = data.google_organization.org[0].org_id
   role   = each.key
