@@ -1,5 +1,5 @@
 locals {
-  suffix = var.suffix == null ? random_id.suffix[0].id : var.suffix
+  suffix = var.suffix == null ? random_id.suffix[0].hex : var.suffix
 }
 
 
