@@ -4,13 +4,13 @@ This module will deploy required resources for Sysdig to be able to scan hosts o
 
 ![permission-diagram.png](permission-diagram.png)
 
-The following resources will be created in each instrumented project:
+The following resources will be created on each instrumented project:
 - For the **Resource Discovery**: Enable Sysdig to authenticate through a Workload Identity Pool (requires provider, 
   service account, role, and related bindings)  in order to be able to discover the VPC/Instance/Volumes
 - For the **Host Data Extraction**: Enable Sysdig to create a disk copy on our SaaS platform, to be able to extract 
   the data required for security assessment.
 
-If instrumenting a GCP Organization, ... TODO
+Organizational support will be added later on.
 
 
 ## Usage
