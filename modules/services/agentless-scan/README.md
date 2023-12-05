@@ -1,7 +1,6 @@
 # GCP Agentless Scanning Module
 
-This module will deploy required authentication system required for Sysdig to be able to scan hosts on your Google 
-Cloud Account.
+This module will deploy required resources for Sysdig to be able to scan hosts on your Google Cloud Account.
 
 ![permission-diagram.png](permission-diagram.png)
 
@@ -18,8 +17,65 @@ If instrumenting a GCP Organization, ... TODO
 
 For usage instructions refer to Sysdig official documentation.
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
+<!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.0 |
+| <a name="requirement_google"></a> [google](#requirement\_google) | >= 4.1, < 5.0 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.1, < 4.0 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_google"></a> [google](#provider\_google) | >= 4.1, < 5.0 |
+| <a name="provider_random"></a> [random](#provider\_random) | >= 3.1, < 4.0 |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [google_iam_workload_identity_pool.agentless](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/iam_workload_identity_pool) | resource |
+| [google_iam_workload_identity_pool_provider.agentless](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/iam_workload_identity_pool_provider) | resource |
+| [google_iam_workload_identity_pool_provider.agentless_gcp](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/iam_workload_identity_pool_provider) | resource |
+| [google_project_iam_binding.admin-account-iam](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_binding) | resource |
+| [google_project_iam_binding.controller_custom](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_binding) | resource |
+| [google_project_iam_custom_role.controller](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_custom_role) | resource |
+| [google_project_iam_custom_role.worker_role](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_custom_role) | resource |
+| [google_service_account.controller](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account) | resource |
+| [google_service_account_iam_member.controller_custom](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_member) | resource |
+| [google_service_account_iam_member.controller_custom_gcp](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_member) | resource |
+| [random_id.suffix](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) | resource |
+| [google_project.project](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/project) | data source |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_project_id"></a> [project\_id](#input\_project\_id) | GCP Project ID | `string` | n/a | yes |
+| <a name="input_worker_identity"></a> [worker\_identity](#input\_worker\_identity) | Sysdig provided Identity for the Service Account in charge of performing the host disk analysis | `string` | n/a | yes |
+| <a name="input_role_name"></a> [role\_name](#input\_role\_name) | Name for the Worker Role on the Customer infrastructure | `string` | `"SysdigAgentlessHostRole"` | no |
+| <a name="input_suffix"></a> [suffix](#input\_suffix) | Suffix word to enable multiple deployments with different naming. Workload Identity Pool and Providers have a soft deletion on Google that will disallow name re-utilization | `string` | `null` | no |
+| <a name="input_sysdig_account_id"></a> [sysdig\_account\_id](#input\_sysdig\_account\_id) | Sysdig provided GCP Account designated for the host scan | `string` | `null` | no |
+| <a name="input_sysdig_backend"></a> [sysdig\_backend](#input\_sysdig\_backend) | Sysdig provided AWS Account designated for the host scan | `string` | `null` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_controller_service_account"></a> [controller\_service\_account](#output\_controller\_service\_account) | n/a |
+| <a name="output_json_payload"></a> [json\_payload](#output\_json\_payload) | n/a |
+| <a name="output_project_id"></a> [project\_id](#output\_project\_id) | n/a |
+| <a name="output_project_number"></a> [project\_number](#output\_project\_number) | n/a |
+| <a name="output_workload_identity_pool_provider"></a> [workload\_identity\_pool\_provider](#output\_workload\_identity\_pool\_provider) | n/a |
+<!-- END_TF_DOCS -->
 
 ## Authors
 
@@ -28,4 +84,3 @@ Module is maintained by [Sysdig](https://sysdig.com).
 ## License
 
 Apache 2 Licensed. See LICENSE for full details.
-
