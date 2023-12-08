@@ -33,6 +33,13 @@ jobs:
   build-and-test:
     name: Build and Test
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        example:
+          - "secure_config_posture_identity_access/single/main.tf"
+          - "secure_config_posture_identity_access/organization/main.tf"
+          - "secure_threat_detection/single/main.tf"
+          - "secure_threat_detection/organization/main.tf"
     steps:
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -54,4 +61,6 @@ jobs:
     # - name: Build
     #   run: go build ./...
     - name: Test
+      env:
+        EXAMPLES: examples/${{ matrix.example }}
       run: make test
