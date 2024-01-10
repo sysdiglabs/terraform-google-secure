@@ -9,7 +9,7 @@ output "ingestion_pubsub_topic_name" {
 }
 
 output "ingestion_sink_name" {
-  value       = google_logging_project_sink.ingestion_sink.name
+  value       = var.is_organizational ? google_logging_organization_sink.ingestion_sink[0].name : google_logging_project_sink.ingestion_sink[0].name
   description = "Project/Organization sink to direct the AuditLogs towards a dedicated PubSub topic"
 }
 
