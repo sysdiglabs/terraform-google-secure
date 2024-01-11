@@ -62,3 +62,6 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_push_endpoint"></a> [push\_endpoint](#output\_push\_endpoint) | Push endpoint towards which the POST request will be directed |
+| <a name="output_ingestion_pubsub_topic_name"></a> [ingestion\_pubsub\_topic\_name](#output\_ingestion\_pubsub\_topic\_name) | PubSub ingestion topic that will hold all the AuditLogs coming from the specified project |
+| <a name="output_ingestion_sink_name"></a> [ingestion\_sink\_name](#output\_ingestion\_sink\_name) | Project/Organization sink to direct the AuditLogs towards a dedicated PubSub topic |
+| <a name="output_ingestion_push_subscription_name"></a> [ingestion\_push\_subscription\_name](#output\_ingestion\_push\_subscription\_name) | Push Subscription that will POST the AuditLogs collected from the project towards Sysdig's backend |
