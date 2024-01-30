@@ -23,5 +23,5 @@ resource "sysdig_secure_cloud_auth_account" "gcp_project_" {
       }
     })
   }
-  depends_on = [google_service_account.controller, var.sysdig_backend != null ? google_iam_workload_identity_pool_provider.agentless?google_iam_workload_identity_pool_provider.agentless_gcp]
+  depends_on = [google_service_account.controller, var.sysdig_backend != null ? google_iam_workload_identity_pool_provider.agentless:google_iam_workload_identity_pool_provider.agentless_gcp]
 }
