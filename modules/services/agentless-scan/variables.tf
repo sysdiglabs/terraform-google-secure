@@ -1,3 +1,4 @@
+# mandatory
 variable "project_id" {
   type        = string
   description = "GCP Project ID"
@@ -8,6 +9,7 @@ variable "worker_identity" {
   description = "Sysdig provided Identity for the Service Account in charge of performing the host disk analysis"
 }
 
+# optional
 variable "sysdig_backend" {
   type        = string
   description = "Sysdig provided AWS Account designated for the host scan.<br/>One of `sysdig_backend` or `sysdig_account_id`must be provided"
