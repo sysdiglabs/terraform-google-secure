@@ -41,5 +41,5 @@ output "json_payload" {
     error_message = "Cannot provide both sysdig_backend or sysdig_account_id"
   }
 
-  description="Deprecated. JSON Payload to internally provision customer on Sysdig VM Host scan on Sysdig"
+  description = "Deprecated. JSON Payload to internally provision customer on Sysdig VM Host scan on Sysdig"
 }
