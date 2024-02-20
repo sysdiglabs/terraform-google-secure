@@ -14,12 +14,14 @@ resource "sysdig_secure_cloud_auth_account" "gcp_project" {
     type     = "COMPONENT_SERVICE_PRINCIPAL"
     instance = "secure-scanning"
     service_principal_metadata = jsonencode({
-      # note; duplicated on
-      # - module output values
-      # - sysdig_provider outputs for API
+      # note; keep consistent values on duplicated
+      # - outputs.tf
+      # - sysdig_provider.tf:20
       gcp = {
-        authUri     = var.sysdig_backend != null ? google_iam_workload_identity_pool_provider.agentless[0].name : var.sysdig_account_id != null ? google_iam_workload_identity_pool_provider.agentless_gcp[0].name : null
-        clientEmail = google_service_account.controller.email
+        workload_identity_federation = {
+          pool_provider_id = var.sysdig_backend != null ? google_iam_workload_identity_pool_provider.agentless[0].name : var.sysdig_account_id != null ? google_iam_workload_identity_pool_provider.agentless_gcp[0].name : null
+        }
+        email = google_service_account.controller.email
       }
     })
   }
