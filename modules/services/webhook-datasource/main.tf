@@ -154,7 +154,7 @@ data "google_project" "project" {
 }
 
 resource "random_id" "suffix" {
-	  byte_length = 4
+  byte_length = 4
 }
 
 locals {
