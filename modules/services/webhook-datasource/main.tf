@@ -141,3 +141,82 @@ resource "google_pubsub_subscription" "ingestion_topic_push_subscription" {
   }
 }
 
+#------------------------------------------------------------------#
+# Fetch and compute required data for Workload Identity Federation #
+#------------------------------------------------------------------#
+
+data "sysdig_secure_trusted_cloud_identity" "trusted_identity" {
+  cloud_provider = "gcp"
+}
+
+data "google_project" "project" {
+  project_id = var.project_id
+}
+
+resource "random_id" "suffix" {
+	  byte_length = 4
+}
+
+locals {
+  workload_identity_pool_name = "sysdig-ingestion-${random_id.suffix.hex}"
+}
+
+#------------------------------------------------------------#
+# Configure Workload Identity Federation for auth            #
+# See https://cloud.google.com/iam/docs/access-resources-aws #
+#------------------------------------------------------------#
+
+resource "google_iam_workload_identity_pool" "ingestion_auth_pool" {
+  project                   = var.project_id
+  workload_identity_pool_id = local.workload_identity_pool_name
+}
+
+resource "google_iam_workload_identity_pool_provider" "ingestion_auth_pool_provider" {
+  project                            = var.project_id
+  workload_identity_pool_id          = google_iam_workload_identity_pool.ingestion_auth_pool.workload_identity_pool_id
+  workload_identity_pool_provider_id = local.workload_identity_pool_name
+  display_name                       = "Sysdigcloud ingestion auth"
+  description                        = "AWS identity pool provider for Sysdig Secure Data Ingestion resources"
+  disabled                           = false
+
+  attribute_condition = "attribute.aws_role==\"arn:aws:sts::${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}:assumed-role/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_role_name}\""
+
+  attribute_mapping = {
+    "google.subject"     = "assertion.arn",
+    "attribute.aws_role" = "assertion.arn"
+  }
+
+  aws {
+    account_id = data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id
+  }
+}
+
+# creating custom role with permissions to access data ingestion resources
+resource "google_project_iam_custom_role" "custom_ingestion_auth_role" {
+  project     = var.project_id
+  role_id     = var.role_name
+  title       = "Sysdigcloud Ingestion Auth Role"
+  description = "A Role providing the required permissions for Sysdig Backend to read cloud resources created for data ingestion"
+  permissions = [
+    "pubsub.topics.get",
+    "pubsub.topics.list",
+    "pubsub.subscriptions.get",
+    "pubsub.subscriptions.list",
+    "logging.sinks.get",
+    "logging.sinks.list",
+  ]
+}
+
+# adding custom role permissions to the service account for auth
+resource "google_project_iam_member" "custom" {
+  project = var.project_id
+  role    = google_project_iam_custom_role.custom_ingestion_auth_role.id
+  member  = "serviceAccount:${google_service_account.push_auth.email}"
+}
+
+# attaching WIF as a member to the service account for auth
+resource "google_service_account_iam_member" "custom_auth" {
+  service_account_id = google_service_account.push_auth.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/projects/${data.google_project.project.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.ingestion_auth_pool.workload_identity_pool_id}/attribute.aws_role/arn:aws:sts::${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}:assumed-role/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_role_name}"
+}

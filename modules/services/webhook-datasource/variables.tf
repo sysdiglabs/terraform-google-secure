@@ -57,3 +57,9 @@ variable "organization_domain" {
   description = "(Optional) Organization domain. e.g. sysdig.com"
   default     = ""
 }
+
+variable "role_name" {
+  type        = string
+  description = "Name for the Ingestion auth Role on the Customer infrastructure"
+  default     = "SysdigIngestionAuthRole"
+}
