@@ -6,19 +6,12 @@ output "project_number" {
   value = data.google_project.project.number
 }
 
-# note; keep consistent values on duplicated
-# - outputs.tf
-# - sysdig_provider.tf:20
-
 output "controller_service_account" {
   value = google_service_account.controller.email
 
   description = "Service Account (email) for Sysdig host Discovery to use"
 }
 
-# note; keep consistent values on duplicated
-# - outputs.tf
-# - sysdig_provider.tf:20
 output "workload_identity_pool_provider" {
   value = var.sysdig_backend != null ? google_iam_workload_identity_pool_provider.agentless[0].name : var.sysdig_account_id != null ? google_iam_workload_identity_pool_provider.agentless_gcp[0].name : null
   precondition {
