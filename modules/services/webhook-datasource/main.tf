@@ -153,12 +153,13 @@ data "google_project" "project" {
   project_id = var.project_id
 }
 
-resource "random_id" "suffix" {
-  byte_length = 4
+locals {
+  suffix = var.suffix == null ? random_id.suffix[0].hex : var.suffix
 }
 
-locals {
-  workload_identity_pool_name = "sysdig-ingestion-${random_id.suffix.hex}"
+resource "random_id" "suffix" {
+  count       = var.suffix == null ? 1 : 0
+  byte_length = 3
 }
 
 #------------------------------------------------------------#
@@ -168,13 +169,13 @@ locals {
 
 resource "google_iam_workload_identity_pool" "ingestion_auth_pool" {
   project                   = var.project_id
-  workload_identity_pool_id = local.workload_identity_pool_name
+  workload_identity_pool_id = "sysdig-ingestion-${local.suffix}"
 }
 
 resource "google_iam_workload_identity_pool_provider" "ingestion_auth_pool_provider" {
   project                            = var.project_id
   workload_identity_pool_id          = google_iam_workload_identity_pool.ingestion_auth_pool.workload_identity_pool_id
-  workload_identity_pool_provider_id = local.workload_identity_pool_name
+  workload_identity_pool_provider_id = "sysdig-ingestion-${local.suffix}"
   display_name                       = "Sysdigcloud ingestion auth"
   description                        = "AWS identity pool provider for Sysdig Secure Data Ingestion resources"
   disabled                           = false
@@ -191,8 +192,10 @@ resource "google_iam_workload_identity_pool_provider" "ingestion_auth_pool_provi
   }
 }
 
-# creating custom role with permissions to access data ingestion resources
+# creating custom role with project-level permissions to access data ingestion resources
 resource "google_project_iam_custom_role" "custom_ingestion_auth_role" {
+  count = var.is_organizational ? 0 : 1
+
   project     = var.project_id
   role_id     = var.role_name
   title       = "Sysdigcloud Ingestion Auth Role"
@@ -207,10 +210,12 @@ resource "google_project_iam_custom_role" "custom_ingestion_auth_role" {
   ]
 }
 
-# adding custom role permissions to the service account for auth
+# adding custom role with project-level permissions to the service account for auth
 resource "google_project_iam_member" "custom" {
+  count = var.is_organizational ? 0 : 1
+
   project = var.project_id
-  role    = google_project_iam_custom_role.custom_ingestion_auth_role.id
+  role    = google_project_iam_custom_role.custom_ingestion_auth_role[0].id
   member  = "serviceAccount:${google_service_account.push_auth.email}"
 }
 
