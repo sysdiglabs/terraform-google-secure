@@ -63,3 +63,9 @@ variable "role_name" {
   description = "Name for the Ingestion auth Role on the Customer infrastructure"
   default     = "SysdigIngestionAuthRole"
 }
+
+variable "external_id" {
+  type        = string
+  description = "Random string generated unique to a customer"
+  default     = ""
+}
