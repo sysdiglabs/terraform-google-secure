@@ -12,10 +12,10 @@ terraform {
     }
     sysdig = {
       # TODO. restore when PR is merged https://github.com/sysdiglabs/terraform-provider-sysdig/pull/480
-#      source  = "sysdiglabs/sysdig"
+      #      source  = "sysdiglabs/sysdig"
 
       # local testing with previous PR
-      source = "terraform.example.com/sysdiglabs/sysdig"
+      source  = "terraform.example.com/sysdiglabs/sysdig"
       version = "~> 1.23.0"
     }
   }

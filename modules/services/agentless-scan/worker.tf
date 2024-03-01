@@ -11,7 +11,7 @@ resource "google_project_iam_custom_role" "worker_role" {
   ]
 }
 
-resource "google_project_iam_binding" "admin-account-iam" {
+resource "google_project_iam_binding" "admin_account_iam" {
   project = var.project_id
   role    = google_project_iam_custom_role.worker_role.id
 

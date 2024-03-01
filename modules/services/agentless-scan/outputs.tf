@@ -1,9 +1,11 @@
 output "project_id" {
-  value = var.project_id
+  value       = var.project_id
+  description = "Target project_id"
 }
 
 output "project_number" {
-  value = data.google_project.project.number
+  value       = data.google_project.project.number
+  description = "Target project_number"
 }
 
 output "controller_service_account" {
