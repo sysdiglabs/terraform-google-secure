@@ -4,34 +4,6 @@ resource "google_service_account" "controller" {
   display_name = "Sysdig Agentless Host Scanning"
 }
 
-resource "google_project_iam_custom_role" "controller" {
-  project = var.project_id
-  role_id = "${var.role_name}Controller${title(local.suffix)}"
-  title   = "Role for Sysdig Agentless Host Workers"
-  permissions = [
-    # networks
-    "compute.networks.list",
-    "compute.networks.get",
-    # instances
-    "compute.instances.list",
-    "compute.instances.get",
-    # disks
-    "compute.disks.list",
-    "compute.disks.get",
-    # workload identity federation
-    "iam.serviceAccounts.getAccessToken",
-  ]
-}
-
-resource "google_project_iam_binding" "controller_custom" {
-  project = var.project_id
-  role    = google_project_iam_custom_role.controller.id
-
-  members = [
-    "serviceAccount:${google_service_account.controller.email}",
-  ]
-}
-
 resource "google_iam_workload_identity_pool" "agentless" {
   workload_identity_pool_id = "sysdig-ahs-${local.suffix}"
 }

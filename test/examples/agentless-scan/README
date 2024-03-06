@@ -1,0 +1,6 @@
+
+note;
+
+- we test the cloud-scan module together with its dependencies on the minimal use-case
+    - cspm; for discovery
+    - sysdig provider `sysdig_secure_cloud_auth_account`; for authentication
