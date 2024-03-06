@@ -18,7 +18,10 @@ deps: $(TFLINT)
 lint: $(TFLINT)
 	$(MAKE) -C modules lint
 
+fmt-check: fmt
 fmt:
+	terraform fmt -check -recursive modules
+fmt-fix:
 	terraform fmt -check -recursive modules
 
 clean:
