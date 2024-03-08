@@ -48,3 +48,30 @@ resource "google_logging_organization_sink" "ingestion_sink" {
   # even from potential sub-organizations
   include_children = true
 }
+
+# creating custom role with organization-level permissions to access data ingestion resources
+resource "google_organization_iam_custom_role" "custom_ingestion_auth_role" {
+  count = var.is_organizational ? 1 : 0
+
+  org_id      = data.google_organization.org[0].org_id
+  role_id     = var.role_name
+  title       = "Sysdigcloud Ingestion Auth Role"
+  description = "A Role providing the required permissions for Sysdig Backend to read cloud resources created for data ingestion"
+  permissions = [
+    "pubsub.topics.get",
+    "pubsub.topics.list",
+    "pubsub.subscriptions.get",
+    "pubsub.subscriptions.list",
+    "logging.sinks.get",
+    "logging.sinks.list",
+  ]
+}
+
+# adding custom role with organization-level permissions to the service account for auth
+resource "google_organization_iam_member" "custom" {
+  count = var.is_organizational ? 1 : 0
+
+  org_id = data.google_organization.org[0].org_id
+  role   = google_organization_iam_custom_role.custom_ingestion_auth_role[0].id
+  member = "serviceAccount:${google_service_account.push_auth.email}"
+}
