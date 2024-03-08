@@ -157,6 +157,7 @@ locals {
   suffix = var.suffix == null ? random_id.suffix[0].hex : var.suffix
 }
 
+// suffix to uniquely identify WIF pool and provider during multiple installs. If suffix value is not provided, this will generate a random value.
 resource "random_id" "suffix" {
   count       = var.suffix == null ? 1 : 0
   byte_length = 3
