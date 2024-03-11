@@ -12,9 +12,13 @@ The following resources will be created on each instrumented project:
 - For the **Host Data Extraction**: Enable Sysdig to create a disk copy on our SaaS platform, to be able to extract 
   the data required for security assessment.
 
-![permission-diagram.png](permission-diagram.png)
 
-Organizational support will be added later on.
+## Single Project Setup
+![permission_diagram_single](./permission_diagram_single.png)
+
+## Organizational Setup
+![permission_diagram_org](./permission_diagram_org.png)
+
 
 <br/><br/>
 
