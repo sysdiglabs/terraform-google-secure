@@ -1,3 +1,7 @@
+provider "google"{
+  project="mytestproject"
+}
+
 
 module "agentless_scan" {
   source            = "../../../..//modules/services/agentless-scan"
@@ -6,4 +10,5 @@ module "agentless_scan" {
   worker_identity   = "foo@bar.com"
 
   is_organizational = true
+  organization_domain = "myorg.com"
 }

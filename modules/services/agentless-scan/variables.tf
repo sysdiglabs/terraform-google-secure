@@ -24,8 +24,8 @@ variable "sysdig_account_id" {
 # optional
 variable "role_name" {
   type        = string
-  description = "Optional. Name for the Worker Role on the Customer infrastructure"
-  default     = "SysdigAgentlessHostRole"
+  description = "Optional. Name for Sysdig operations on discovery and scan"
+  default     = "SysdigCloudVM"
 }
 
 

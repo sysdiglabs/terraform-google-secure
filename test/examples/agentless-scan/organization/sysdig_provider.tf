@@ -29,3 +29,8 @@ resource "sysdig_secure_cloud_auth_account" "gcp_project" {
   }
   depends_on = [module.agentless_scan]
 }
+
+resource "sysdig_secure_organization" "gcp_organization_myproject" {
+  management_account_id = sysdig_secure_cloud_auth_account.gcp_project.id
+  depends_on = [module.agentless_scan]
+}
