@@ -14,10 +14,10 @@ The following resources will be created on each instrumented project:
 
 
 ## Single Project Setup
-![permission_diagram_single](./permission_diagram_single.png)
+![permission_diagram_single](./permissions_diagram_single.png)
 
 ## Organizational Setup
-![permission_diagram_org](./permission_diagram_org.png)
+![permission_diagram_org](./permissions_diagram_org.png)
 
 
 <br/><br/>
