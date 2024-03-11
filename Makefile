@@ -22,7 +22,7 @@ fmt-check: fmt
 fmt:
 	terraform fmt -check -recursive modules
 fmt-fix:
-	terraform fmt -check -recursive modules
+	terraform fmt -recursive modules
 
 clean:
 	find -name ".terraform" -type d | xargs rm -rf
