@@ -11,12 +11,8 @@ terraform {
       version = ">= 3.1, < 4.0"
     }
     sysdig = {
-      # TODO. restore when PR is merged https://github.com/sysdiglabs/terraform-provider-sysdig/pull/480
-      #      source  = "sysdiglabs/sysdig"
-
-      # local testing with previous PR
-      source  = "terraform.example.com/sysdiglabs/sysdig"
-      version = "~> 1.23.0"
+      source  = "sysdiglabs/sysdig"
+      version = ">= 1.23.1"
     }
   }
 }
