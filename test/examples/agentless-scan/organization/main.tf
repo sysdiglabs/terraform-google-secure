@@ -3,7 +3,7 @@ provider "google"{
 }
 
 
-module "agentless_scan" {
+module "cloud_host" {
   source            = "../../../..//modules/services/agentless-scan"
   project_id        = "mytestproject"
   sysdig_account_id = "012345678"

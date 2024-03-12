@@ -5,7 +5,7 @@ provider "sysdig" {
 
 resource "sysdig_secure_cloud_auth_account" "gcp_project" {
   enabled       = true
-  provider_id   = "mytestproject"
+  provider_id   = "org-child-project-1"
   provider_type = "PROVIDER_GCP"
 
   feature {
@@ -15,22 +15,35 @@ resource "sysdig_secure_cloud_auth_account" "gcp_project" {
     }
   }
 
+
+  component {
+    type     = "COMPONENT_SERVICE_PRINCIPAL"
+    instance = "secure-onboarding"
+    service_principal_metadata = jsonencode({
+      gcp = {
+        key = module.organization-posture.service_account_key
+      }
+    })
+  }
+
+
   component {
     type     = "COMPONENT_SERVICE_PRINCIPAL"
     instance = "secure-scanning"
     service_principal_metadata = jsonencode({
       gcp = {
         workload_identity_federation = {
-          pool_provider_id = module.agentless_scan.workload_identity_pool_provider
+          pool_provider_id = module.cloud_host.workload_identity_pool_provider
         }
-        email = module.agentless_scan.controller_service_account
+        email = module.cloud_host.controller_service_account
       }
     })
   }
-  depends_on = [module.agentless_scan]
+
+  depends_on = [module.cloud_host, module.organization-posture]
 }
 
 resource "sysdig_secure_organization" "gcp_organization_myproject" {
   management_account_id = sysdig_secure_cloud_auth_account.gcp_project.id
-  depends_on = [module.agentless_scan]
+  depends_on = [module.organization-posture]
 }
