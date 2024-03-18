@@ -18,8 +18,11 @@ deps: $(TFLINT)
 lint: $(TFLINT)
 	$(MAKE) -C modules lint
 
+fmt-check: fmt
 fmt:
 	terraform fmt -check -recursive modules
+fmt-fix:
+	terraform fmt -recursive modules
 
 clean:
 	find -name ".terraform" -type d | xargs rm -rf
