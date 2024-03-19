@@ -41,6 +41,7 @@ jobs:
           - "secure_threat_detection/single/main.tf"
           - "secure_threat_detection/organization/main.tf"
           - "agentless-scan/single/main.tf"
+          - "agentless-scan/organization/main.tf"
     steps:
     - name: Set up Go
       uses: actions/setup-go@v2
