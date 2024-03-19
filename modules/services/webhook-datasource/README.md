@@ -16,7 +16,7 @@ The following resources will be created in each instrumented account:
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >= 4.21.0 |
-| <a name="requirement_sysdig"></a> [sysdig](#requirement\_sysdig) | >= 1.19.0 |
+| <a name="requirement_sysdig"></a> [sysdig](#requirement\_sysdig) | >= 1.23.1 |
 
 ## Providers
 
