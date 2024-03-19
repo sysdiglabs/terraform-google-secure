@@ -15,7 +15,7 @@ terraform {
   required_providers {
     sysdig = {
       source  = "sysdiglabs/sysdig"
-      version = "~> 1.19.0"
+      version = ">= 1.23.1"
     }
   }
 }
@@ -59,7 +59,7 @@ resource "sysdig_secure_cloud_auth_account" "gcp_project_mytestproject" {
         workload_identity_federation = {
           pool_id          = module.single-project-threat-detection.workload_identity_pool_id
           pool_provider_id = module.single-project-threat-detection.workload_identity_pool_provider_id
-          project_number   = module.single-project-threat-detection. workload_identity_project_number
+          project_number   = module.single-project-threat-detection.workload_identity_project_number
         }
         email = module.single-project-threat-detection.service_account_email
       }
