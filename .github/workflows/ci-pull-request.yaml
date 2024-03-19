@@ -40,6 +40,7 @@ jobs:
           - "secure_config_posture_identity_access/organization/main.tf"
           - "secure_threat_detection/single/main.tf"
           - "secure_threat_detection/organization/main.tf"
+          - "agentless-scan/single/main.tf"
           - "agentless-scan/organization/main.tf"
     steps:
     - name: Set up Go

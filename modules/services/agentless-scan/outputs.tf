@@ -1,13 +1,17 @@
 output "project_id" {
-  value = var.project_id
+  value       = var.project_id
+  description = "Target project_id"
 }
 
 output "project_number" {
-  value = data.google_project.project.number
+  value       = data.google_project.project.number
+  description = "Target project_number"
 }
 
 output "controller_service_account" {
   value = google_service_account.controller.email
+
+  description = "Service Account (email) for Sysdig host Discovery to use"
 }
 
 output "workload_identity_pool_provider" {
@@ -16,6 +20,8 @@ output "workload_identity_pool_provider" {
     condition     = (var.sysdig_backend != null && var.sysdig_account_id == null) || (var.sysdig_backend == null && var.sysdig_account_id != null)
     error_message = "Cannot provide both sysdig_backend or sysdig_account_id"
   }
+
+  description = "Workload Identity Pool Provider URL for Sysdig host Discovery to use"
 }
 
 output "json_payload" {
@@ -29,4 +35,6 @@ output "json_payload" {
     condition     = (var.sysdig_backend != null && var.sysdig_account_id == null) || (var.sysdig_backend == null && var.sysdig_account_id != null)
     error_message = "Cannot provide both sysdig_backend or sysdig_account_id"
   }
+
+  description = "Deprecated. JSON Payload to internally provision customer on Sysdig VM Host scan on Sysdig"
 }

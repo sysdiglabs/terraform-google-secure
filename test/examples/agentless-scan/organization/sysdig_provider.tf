@@ -21,7 +21,7 @@ resource "sysdig_secure_cloud_auth_account" "gcp_project" {
     instance = "secure-onboarding"
     service_principal_metadata = jsonencode({
       gcp = {
-        key = module.organization-posture.service_account_key
+        key = module.organization_posture.service_account_key
       }
     })
   }
@@ -40,10 +40,10 @@ resource "sysdig_secure_cloud_auth_account" "gcp_project" {
     })
   }
 
-  depends_on = [module.cloud_host, module.organization-posture]
+  depends_on = [module.cloud_host, module.organization_posture]
 }
 
 resource "sysdig_secure_organization" "gcp_organization_myproject" {
   management_account_id = sysdig_secure_cloud_auth_account.gcp_project.id
-  depends_on = [module.organization-posture]
+  depends_on            = [module.organization_posture]
 }

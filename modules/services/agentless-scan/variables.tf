@@ -9,6 +9,7 @@ variable "worker_identity" {
   description = "Sysdig provided Identity for the Service Account in charge of performing the host disk analysis"
 }
 
+# mandatory; one of  `sysdig_backend` or `sysdig_account_id`
 variable "sysdig_backend" {
   type        = string
   description = "Sysdig provided AWS Account designated for the host scan.<br/>One of `sysdig_backend` or `sysdig_account_id`must be provided"
@@ -27,6 +28,7 @@ variable "role_name" {
   description = "Optional. Name for Sysdig operations on discovery and scan"
   default     = "SysdigCloudVM"
 }
+
 
 
 variable "suffix" {
