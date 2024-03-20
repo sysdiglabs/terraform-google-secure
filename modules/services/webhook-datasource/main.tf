@@ -95,8 +95,8 @@ resource "google_pubsub_topic_iam_member" "publisher_iam_member" {
 #-------------------#
 
 resource "google_service_account" "push_auth" {
-  account_id   = "ingestion-topic-push-auth"
-  display_name = "Push Auth Service Account"
+  account_id   = "sysdig-ingestion-${local.suffix}"
+  display_name = "Sysdig Ingestion Push Auth Service Account"
   project      = var.project_id
 }
 
