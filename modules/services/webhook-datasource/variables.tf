@@ -66,8 +66,7 @@ variable "role_name" {
 
 variable "external_id" {
   type        = string
-  description = "Random string generated unique to a customer"
-  default     = ""
+  description = "(Required) Random string generated unique to a customer"
 }
 
 variable "suffix" {
