@@ -15,6 +15,9 @@ resource "google_project_iam_custom_role" "controller" {
     "artifactregistry.repositories.list",
     "artifactregistry.dockerimages.get",
     "artifactregistry.dockerimages.list",
+    "storage.objects.get",
+    "storage.buckets.list",
+    "storage.objects.list",
 
     # workload identity federation
     "iam.serviceAccounts.getAccessToken",
