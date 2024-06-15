@@ -8,6 +8,27 @@ module "single-project-threat-detection" {
   project_id    = "mytestproject"
   push_endpoint = "test_sysdig_secure_cloudingestion_endpoint"
   external_id   = "external_id"
+  audit_log_config = [
+    {
+      service = "cloudsql.googleapis.com"
+      log_config = [{ log_type = "DATA_READ",
+        exempted_members = [
+          "serviceAccount:my-sa@my-project.iam.gserviceaccount.com",
+        ]
+        },
+        { log_type = "DATA_WRITE" }
+      ]
+    },
+    {
+      service = "storage.googleapis.com"
+      log_config = [{ log_type = "DATA_WRITE"
+      }]
+    },
+    {
+      service    = "container.googleapis.com"
+      log_config = [{ log_type = "DATA_READ" }]
+    }
+  ]
 }
 
 terraform {
@@ -66,4 +87,3 @@ resource "sysdig_secure_cloud_auth_account" "gcp_project_mytestproject" {
     })
   }
 }
-

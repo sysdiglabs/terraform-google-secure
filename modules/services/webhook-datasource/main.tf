@@ -27,22 +27,28 @@
 # Audit Logs #
 #------------#
 
+locals {
+  # Data structure will be a map for each service, that can have multiple audit_log_config
+  audit_log_config = { for audit in var.audit_log_config :
+    audit["service"] => {
+      log_config = audit["log_config"]
+    }
+  }
+}
+
 resource "google_project_iam_audit_config" "audit_config" {
-  count = var.is_organizational ? 0 : 1
+  for_each = var.is_organizational ? {} : local.audit_log_config
 
   project = var.project_id
-  service = "allServices"
+  service = each.key
 
-  audit_log_config {
-    log_type = "ADMIN_READ"
-  }
-
-  audit_log_config {
-    log_type = "DATA_READ"
-  }
-
-  audit_log_config {
-    log_type = "DATA_WRITE"
+  dynamic "audit_log_config" {
+    for_each = each.value.log_config
+    iterator = log_config
+    content {
+      log_type         = log_config.value.log_type
+      exempted_members = log_config.value.exempted_members
+    }
   }
 }
 
