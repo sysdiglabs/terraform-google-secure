@@ -4,12 +4,33 @@ provider "google" {
 }
 
 module "organization-threat-detection" {
-  source            	= "../../../..//modules/services/webhook-datasource"
-  project_id        	= "mytestproject"
-  push_endpoint     	= "test_sysdig_secure_cloudingestion_endpoint"
-  is_organizational 	= true
+  source              = "../../../..//modules/services/webhook-datasource"
+  project_id          = "mytestproject"
+  push_endpoint       = "test_sysdig_secure_cloudingestion_endpoint"
+  is_organizational   = true
   organization_domain = "mytestorg.com"
   external_id         = "external_id"
+  audit_log_config = [
+    {
+      service = "cloudsql.googleapis.com"
+      log_config = [{ log_type = "DATA_READ",
+        exempted_members = [
+          "serviceAccount:my-sa@my-project.iam.gserviceaccount.com",
+        ]
+        },
+        { log_type = "DATA_WRITE" }
+      ]
+    },
+    {
+      service = "storage.googleapis.com"
+      log_config = [{ log_type = "DATA_WRITE"
+      }]
+    },
+    {
+      service    = "container.googleapis.com"
+      log_config = [{ log_type = "DATA_READ" }]
+    }
+  ]
 }
 
 module "organization-posture" {

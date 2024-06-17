@@ -11,21 +11,18 @@ data "google_organization" "org" {
 # Audit Logs #
 #------------#
 resource "google_organization_iam_audit_config" "audit_config" {
-  count = var.is_organizational ? 1 : 0
+  for_each = var.is_organizational ? local.audit_log_config : {}
 
   org_id  = data.google_organization.org[0].org_id
-  service = "allServices"
+  service = each.key
 
-  audit_log_config {
-    log_type = "ADMIN_READ"
-  }
-
-  audit_log_config {
-    log_type = "DATA_READ"
-  }
-
-  audit_log_config {
-    log_type = "DATA_WRITE"
+  dynamic "audit_log_config" {
+    for_each = each.value.log_config
+    iterator = log_config
+    content {
+      log_type         = log_config.value.log_type
+      exempted_members = log_config.value.exempted_members
+    }
   }
 }
 
