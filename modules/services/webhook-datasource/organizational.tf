@@ -41,6 +41,17 @@ resource "google_logging_organization_sink" "ingestion_sink" {
   destination = "pubsub.googleapis.com/projects/${var.project_id}/topics/${google_pubsub_topic.ingestion_topic.name}"
   filter      = "protoPayload.@type = \"type.googleapis.com/google.cloud.audit.AuditLog\""
 
+  # Dynamic block to exclude logs from ingestion
+  dynamic "exclusions" {
+    for_each = var.exclude_logs_filter
+    content {
+      name        = exclusions.value.name
+      description = exclusions.value.description
+      filter      = exclusions.value.filter
+      disabled    = exclusions.value.disabled
+    }
+  }
+
   # NOTE: The include_children attribute is set to true in order to ingest data
   # even from potential sub-organizations
   include_children = true

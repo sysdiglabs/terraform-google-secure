@@ -95,3 +95,14 @@ variable "audit_log_config" {
     }
   ]
 }
+
+variable "exclude_logs_filter" {
+  description = "Filter to exclude logs from ingestion. Default is to ingest all google.cloud.audit.AuditLog logs. with no exclusions."
+  type = list(object({
+    name        = string,
+    description = optional(string),
+    filter      = string,
+    disabled    = optional(bool)
+  }))
+  default = []
+}

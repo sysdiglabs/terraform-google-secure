@@ -85,6 +85,17 @@ resource "google_logging_project_sink" "ingestion_sink" {
 
   filter = "protoPayload.@type = \"type.googleapis.com/google.cloud.audit.AuditLog\""
 
+  # Dynamic block to exclude logs from ingestion
+  dynamic "exclusions" {
+    for_each = var.exclude_logs_filter
+    content {
+      name        = exclusions.value.name
+      description = exclusions.value.description
+      filter      = exclusions.value.filter
+      disabled    = exclusions.value.disabled
+    }
+  }
+
   # NOTE: Used to create a dedicated writer identity and not using the default one
   unique_writer_identity = true
 }

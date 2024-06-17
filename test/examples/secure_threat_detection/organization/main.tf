@@ -31,6 +31,18 @@ module "organization-threat-detection" {
       log_config = [{ log_type = "DATA_READ" }]
     }
   ]
+  exclude_logs_filter = [
+    {
+      name        = "nsexcllusion2"
+      description = "Exclude logs from namespace-2 in k8s"
+      filter      = "resource.type = k8s_container resource.labels.namespace_name=\"namespace-2\" "
+    },
+    {
+      name        = "nsexcllusion1"
+      description = "Exclude logs from namespace-1 in k8s"
+      filter      = "resource.type = k8s_container resource.labels.namespace_name=\"namespace-1\" "
+    }
+  ]
 }
 
 module "organization-posture" {
