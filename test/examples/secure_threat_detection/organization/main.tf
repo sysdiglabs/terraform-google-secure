@@ -4,12 +4,45 @@ provider "google" {
 }
 
 module "organization-threat-detection" {
-  source            	= "../../../..//modules/services/webhook-datasource"
-  project_id        	= "mytestproject"
-  push_endpoint     	= "test_sysdig_secure_cloudingestion_endpoint"
-  is_organizational 	= true
+  source              = "../../../..//modules/services/webhook-datasource"
+  project_id          = "mytestproject"
+  push_endpoint       = "test_sysdig_secure_cloudingestion_endpoint"
+  is_organizational   = true
   organization_domain = "mytestorg.com"
   external_id         = "external_id"
+  audit_log_config = [
+    {
+      service = "cloudsql.googleapis.com"
+      log_config = [{ log_type = "DATA_READ",
+        exempted_members = [
+          "serviceAccount:my-sa@my-project.iam.gserviceaccount.com",
+        ]
+        },
+        { log_type = "DATA_WRITE" }
+      ]
+    },
+    {
+      service = "storage.googleapis.com"
+      log_config = [{ log_type = "DATA_WRITE"
+      }]
+    },
+    {
+      service    = "container.googleapis.com"
+      log_config = [{ log_type = "DATA_READ" }]
+    }
+  ]
+  exclude_logs_filter = [
+    {
+      name        = "nsexcllusion2"
+      description = "Exclude logs from namespace-2 in k8s"
+      filter      = "resource.type = k8s_container resource.labels.namespace_name=\"namespace-2\" "
+    },
+    {
+      name        = "nsexcllusion1"
+      description = "Exclude logs from namespace-1 in k8s"
+      filter      = "resource.type = k8s_container resource.labels.namespace_name=\"namespace-1\" "
+    }
+  ]
 }
 
 module "organization-posture" {

@@ -11,21 +11,18 @@ data "google_organization" "org" {
 # Audit Logs #
 #------------#
 resource "google_organization_iam_audit_config" "audit_config" {
-  count = var.is_organizational ? 1 : 0
+  for_each = var.is_organizational ? local.audit_log_config : {}
 
   org_id  = data.google_organization.org[0].org_id
-  service = "allServices"
+  service = each.key
 
-  audit_log_config {
-    log_type = "ADMIN_READ"
-  }
-
-  audit_log_config {
-    log_type = "DATA_READ"
-  }
-
-  audit_log_config {
-    log_type = "DATA_WRITE"
+  dynamic "audit_log_config" {
+    for_each = each.value.log_config
+    iterator = log_config
+    content {
+      log_type         = log_config.value.log_type
+      exempted_members = log_config.value.exempted_members
+    }
   }
 }
 
@@ -43,6 +40,17 @@ resource "google_logging_organization_sink" "ingestion_sink" {
   # NOTE: The target destination is a PubSub topic
   destination = "pubsub.googleapis.com/projects/${var.project_id}/topics/${google_pubsub_topic.ingestion_topic.name}"
   filter      = "protoPayload.@type = \"type.googleapis.com/google.cloud.audit.AuditLog\""
+
+  # Dynamic block to exclude logs from ingestion
+  dynamic "exclusions" {
+    for_each = var.exclude_logs_filter
+    content {
+      name        = exclusions.value.name
+      description = exclusions.value.description
+      filter      = exclusions.value.filter
+      disabled    = exclusions.value.disabled
+    }
+  }
 
   # NOTE: The include_children attribute is set to true in order to ingest data
   # even from potential sub-organizations

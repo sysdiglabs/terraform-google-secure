@@ -27,22 +27,28 @@
 # Audit Logs #
 #------------#
 
+locals {
+  # Data structure will be a map for each service, that can have multiple audit_log_config
+  audit_log_config = { for audit in var.audit_log_config :
+    audit["service"] => {
+      log_config = audit["log_config"]
+    }
+  }
+}
+
 resource "google_project_iam_audit_config" "audit_config" {
-  count = var.is_organizational ? 0 : 1
+  for_each = var.is_organizational ? {} : local.audit_log_config
 
   project = var.project_id
-  service = "allServices"
+  service = each.key
 
-  audit_log_config {
-    log_type = "ADMIN_READ"
-  }
-
-  audit_log_config {
-    log_type = "DATA_READ"
-  }
-
-  audit_log_config {
-    log_type = "DATA_WRITE"
+  dynamic "audit_log_config" {
+    for_each = each.value.log_config
+    iterator = log_config
+    content {
+      log_type         = log_config.value.log_type
+      exempted_members = log_config.value.exempted_members
+    }
   }
 }
 
@@ -78,6 +84,17 @@ resource "google_logging_project_sink" "ingestion_sink" {
   destination = "pubsub.googleapis.com/projects/${var.project_id}/topics/${google_pubsub_topic.ingestion_topic.name}"
 
   filter = "protoPayload.@type = \"type.googleapis.com/google.cloud.audit.AuditLog\""
+
+  # Dynamic block to exclude logs from ingestion
+  dynamic "exclusions" {
+    for_each = var.exclude_logs_filter
+    content {
+      name        = exclusions.value.name
+      description = exclusions.value.description
+      filter      = exclusions.value.filter
+      disabled    = exclusions.value.disabled
+    }
+  }
 
   # NOTE: Used to create a dedicated writer identity and not using the default one
   unique_writer_identity = true
