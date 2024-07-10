@@ -96,6 +96,12 @@ variable "audit_log_config" {
   ]
 }
 
+variable "ingestion_sink_filter" {
+  type        = string
+  description = "Filter the Sink is set up with. Ingests AuditLogs by default."
+  default     = "protoPayload.@type = \"type.googleapis.com/google.cloud.audit.AuditLog\""
+}
+
 variable "exclude_logs_filter" {
   description = "Filter to exclude logs from ingestion. Default is to ingest all google.cloud.audit.AuditLog logs. with no exclusions."
   type = list(object({

@@ -10,6 +10,7 @@ module "organization-threat-detection" {
   is_organizational   = true
   organization_domain = "mytestorg.com"
   external_id         = "external_id"
+  ingestion_sink_filter = "protoPayload.@type = \"type.googleapis.com/google.cloud.audit.AuditLog\" (protoPayload.methodName!~ \"\\.(get|list)$\" OR protoPayload.serviceName != (\"k8s.io\" and \"storage.googleapis.com\"))"
   audit_log_config = [
     {
       service = "cloudsql.googleapis.com"
