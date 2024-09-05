@@ -7,29 +7,29 @@ data "google_organization" "org" {
   domain = var.organization_domain
 }
 
-# creating custom role with organization-level permissions to access onboarding resources
-resource "google_organization_iam_custom_role" "custom_onboarding_auth_role" {
-  count = var.is_organizational ? 1 : 0
+###################################################
+# Setup Service Account permissions
+###################################################
 
-  org_id      = data.google_organization.org[0].org_id
-  role_id     = var.role_name
-  title       = "Sysdigcloud Onboarding Auth Role"
-  description = "A Role providing the required permissions for Sysdig Backend to read cloud resources created for onboarding"
-  permissions = [
-    "pubsub.topics.get",
-    "pubsub.topics.list",
-    "pubsub.subscriptions.get",
-    "pubsub.subscriptions.list",
-    "logging.sinks.get",
-    "logging.sinks.list",
-  ]
-}
-
-# adding custom role with organization-level permissions to the service account for auth
-resource "google_organization_iam_member" "custom" {
+#---------------------------------
+# role permissions for onboarding
+#---------------------------------
+resource "google_organization_iam_member" "browser" {
   count = var.is_organizational ? 1 : 0
 
   org_id = data.google_organization.org[0].org_id
-  role   = google_organization_iam_custom_role.custom_onboarding_auth_role[0].id
+  role   = "roles/browser"
   member = "serviceAccount:${google_service_account.onboarding_auth.email}"
+}
+
+#---------------------------------------------------------------------------------------------
+# Call Sysdig Backend to create organization with foundational onboarding
+# (ensure it is called after all above cloud resources are created)
+#---------------------------------------------------------------------------------------------
+resource "sysdig_secure_organization" "azure_organization" {
+  count = var.is_organizational ? 1 : 0
+
+  management_account_id   = sysdig_secure_cloud_auth_account.google_account.id
+  organizational_unit_ids = var.management_group_ids
+  depends_on              = [google_organization_iam_member.browser]
 }

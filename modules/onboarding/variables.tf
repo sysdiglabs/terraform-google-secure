@@ -23,6 +23,12 @@ variable "organization_domain" {
   default     = ""
 }
 
+variable "management_group_ids" {
+  type        = set(string)
+  description = "(Optional) Management group id to onboard. e.g. [organizations/123456789012], [folders/123456789012]"
+  default     = []
+}
+
 variable "external_id" {
   type        = string
   description = "(Required) Random string generated unique to a customer"
