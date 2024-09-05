@@ -21,7 +21,8 @@ locals {
 }
 
 resource "google_service_account" "onboarding_auth" {
-  account_id   = "sysdig-secure-onboarding-${local.suffix}"
+  # service account name cannot be longer than 30 characters
+  account_id   = "sysdig-onboarding-${local.suffix}"
   display_name = "Sysdig Onboarding Auth Service Account"
   project      = var.project_id
 }
@@ -42,13 +43,13 @@ resource "google_service_account_iam_binding" "onboarding_auth_binding" {
 
 resource "google_iam_workload_identity_pool" "onboarding_auth_pool" {
   project                   = var.project_id
-  workload_identity_pool_id = "sysdig-secure-onboarding-${local.suffix}"
+  workload_identity_pool_id = "sysdig-onboarding-${local.suffix}"
 }
 
 resource "google_iam_workload_identity_pool_provider" "onboarding_auth_pool_provider" {
   project                            = var.project_id
   workload_identity_pool_id          = google_iam_workload_identity_pool.onboarding_auth_pool.workload_identity_pool_id
-  workload_identity_pool_provider_id = "sysdig-secure-onboarding-${local.suffix}"
+  workload_identity_pool_provider_id = "sysdig-onboarding-${local.suffix}"
   display_name                       = "Sysdigcloud onboarding auth"
   description                        = "AWS identity pool provider for Sysdig Secure Data Onboarding resources"
   disabled                           = false
@@ -77,7 +78,7 @@ resource "google_project_iam_member" "browser" {
 }
 
 # attaching WIF as a member to the service account for auth
-resource "google_service_account_iam_member" "custom_auth" {
+resource "google_service_account_iam_member" "custom_onboarding_auth" {
   service_account_id = google_service_account.onboarding_auth.name
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/projects/${data.google_project.project.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.onboarding_auth_pool.workload_identity_pool_id}/attribute.aws_role/arn:aws:sts::${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}:assumed-role/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_role_name}/${var.external_id}"
@@ -101,19 +102,17 @@ resource "sysdig_secure_cloud_auth_account" "google_account" {
     version  = "v0.1.0"
     service_principal_metadata = jsonencode({
       gcp = {
-        service_principal = {
-          workload_identity_federation = {
-            pool_id          = google_iam_workload_identity_pool.onboarding_auth_pool.workload_identity_pool_id
-            pool_provider_id = google_iam_workload_identity_pool_provider.onboarding_auth_pool_provider.workload_identity_pool_provider_id
-            project_number   = data.google_project.project.number
-          }
-          email = google_service_account.onboarding_auth.email
+        workload_identity_federation = {
+          pool_id          = google_iam_workload_identity_pool.onboarding_auth_pool.workload_identity_pool_id
+          pool_provider_id = google_iam_workload_identity_pool_provider.onboarding_auth_pool_provider.workload_identity_pool_provider_id
+          project_number   = data.google_project.project.number
         }
+        email = google_service_account.onboarding_auth.email
       }
     })
   }
 
-  depends_on = [google_service_account_iam_member.custom_auth]
+  depends_on = [google_service_account_iam_member.custom_onboarding_auth]
 
   lifecycle {
     ignore_changes = [
