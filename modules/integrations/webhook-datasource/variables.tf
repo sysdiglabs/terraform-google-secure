@@ -1,9 +1,3 @@
-variable "region" {
-  description = "Region for Google provider"
-  type        = string
-  default     = "us-west1"
-}
-
 variable "project_id" {
   type        = string
   description = "(Required) Target Project identifier provided by the customer"

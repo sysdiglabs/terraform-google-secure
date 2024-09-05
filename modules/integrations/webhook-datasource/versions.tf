@@ -8,6 +8,7 @@ terraform {
     }
     sysdig = {
       source  = "sysdiglabs/sysdig"
+      version = ">= 1.34.0"
     }
     random = {
       source  = "hashicorp/random"
