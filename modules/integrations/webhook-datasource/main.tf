@@ -55,8 +55,8 @@ locals {
 
 resource "google_project_iam_audit_config" "audit_config" {
   for_each = var.is_organizational ? {} : local.audit_log_config
-  project = var.project_id
-  service = each.key
+  project  = var.project_id
+  service  = each.key
 
   dynamic "audit_log_config" {
     for_each = each.value.log_config
@@ -79,7 +79,7 @@ resource "google_pubsub_topic" "ingestion_topic" {
 }
 
 resource "google_pubsub_topic" "deadletter_topic" {
-  name = "dl-${google_pubsub_topic.ingestion_topic.name}"
+  name                       = "dl-${google_pubsub_topic.ingestion_topic.name}"
   project                    = var.project_id
   message_retention_duration = var.message_retention_duration
 }
@@ -88,13 +88,13 @@ resource "google_pubsub_topic" "deadletter_topic" {
 # Sink
 #-----------------------------------------------------------------------------------------
 resource "google_logging_project_sink" "ingestion_sink" {
-  count = var.is_organizational ? 0 : 1
+  count       = var.is_organizational ? 0 : 1
   name        = "${google_pubsub_topic.ingestion_topic.name}_sink"
   description = "Sysdig sink to direct the AuditLogs to the PubSub topic used for data gathering"
 
   # NOTE: The target destination is a PubSub topic
   destination = "pubsub.googleapis.com/projects/${var.project_id}/topics/${google_pubsub_topic.ingestion_topic.name}"
-  filter = var.ingestion_sink_filter
+  filter      = var.ingestion_sink_filter
 
   # Dynamic block to exclude logs from ingestion
   dynamic "exclusions" {
@@ -238,10 +238,10 @@ resource "google_service_account_iam_member" "custom_auth" {
 #-----------------------------------------------------------------------------------------------------------------------------------------
 
 resource "sysdig_secure_cloud_auth_account_component" "gcp_webhook_datasource" {
-  account_id                 = var.sysdig_secure_account_id
-  type                       = "COMPONENT_WEBHOOK_DATASOURCE"
-  instance                   = "secure-runtime"
-  version                    = "v0.1.0"
+  account_id = var.sysdig_secure_account_id
+  type       = "COMPONENT_WEBHOOK_DATASOURCE"
+  instance   = "secure-runtime"
+  version    = "v0.1.0"
   webhook_datasource_metadata = jsonencode({
     gcp = {
       webhook_datasource = {
