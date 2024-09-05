@@ -15,7 +15,7 @@
 #
 # provider "sysdig" {
 #   sysdig_secure_url       = "https://secure-staging.sysdig.com"
-#   sysdig_secure_api_token = "744c9bd8-f73d-4ef3-8250-32e976a5301d"
+#   sysdig_secure_api_token = <SYSDIG_TOKEN>
 # }
 #
 # provider "google" {
