@@ -27,7 +27,7 @@ resource "google_service_account" "onboarding_auth" {
 }
 
 resource "google_service_account_iam_binding" "onboarding_auth_binding" {
-  service_account_id = google_service_account.push_auth.name
+  service_account_id = google_service_account.onboarding_auth.name
   role               = "roles/iam.workloadIdentityUser"
 
   members = [
@@ -65,30 +65,14 @@ resource "google_iam_workload_identity_pool_provider" "onboarding_auth_pool_prov
   }
 }
 
-# creating custom role with project-level permissions to access onboarding resources
-resource "google_project_iam_custom_role" "custom_onboarding_auth_role" {
-  count = var.is_organizational ? 0 : 1
-
-  project     = var.project_id
-  role_id     = var.role_name
-  title       = "Sysdigcloud Onboarding Auth Role"
-  description = "A Role providing the required permissions for Sysdig Backend to read cloud resources created for onboarding"
-  permissions = [
-    "pubsub.topics.get",
-    "pubsub.topics.list",
-    "pubsub.subscriptions.get",
-    "pubsub.subscriptions.list",
-    "logging.sinks.get",
-    "logging.sinks.list",
-  ]
-}
-
-# adding custom role with project-level permissions to the service account for auth
-resource "google_project_iam_member" "custom" {
+#---------------------------------
+# role permissions for onboarding
+#---------------------------------
+resource "google_project_iam_member" "browser" {
   count = var.is_organizational ? 0 : 1
 
   project = var.project_id
-  role    = google_project_iam_custom_role.custom_onboarding_auth_role[0].id
+  role    = "roles/browser"
   member  = "serviceAccount:${google_service_account.onboarding_auth.email}"
 }
 
@@ -97,4 +81,44 @@ resource "google_service_account_iam_member" "custom_auth" {
   service_account_id = google_service_account.onboarding_auth.name
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/projects/${data.google_project.project.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.onboarding_auth_pool.workload_identity_pool_id}/attribute.aws_role/arn:aws:sts::${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}:assumed-role/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_role_name}/${var.external_id}"
+}
+
+#---------------------------------------------------------------------------------------------
+# Call Sysdig Backend to create account with foundational onboarding
+# (ensure it is called after all above cloud resources are created using explicit depends_on)
+#---------------------------------------------------------------------------------------------
+
+resource "sysdig_secure_cloud_auth_account" "google_account" {
+  enabled            = true
+  provider_id        = var.project_id
+  provider_type      = "PROVIDER_GCP"
+  provider_alias     = data.google_project.project.name
+  provider_tenant_id = var.organization_domain
+
+  component {
+    type     = "COMPONENT_SERVICE_PRINCIPAL"
+    instance = "secure-onboarding"
+    version  = "v0.1.0"
+    service_principal_metadata = jsonencode({
+      gcp = {
+        service_principal = {
+          workload_identity_federation = {
+            pool_id          = google_iam_workload_identity_pool.onboarding_auth_pool.workload_identity_pool_id
+            pool_provider_id = google_iam_workload_identity_pool_provider.onboarding_auth_pool_provider.workload_identity_pool_provider_id
+            project_number   = data.google_project.project.number
+          }
+          email = google_service_account.onboarding_auth.email
+        }
+      }
+    })
+  }
+
+  depends_on = [google_service_account_iam_member.custom_auth]
+
+  lifecycle {
+    ignore_changes = [
+      component,
+      feature
+    ]
+  }
 }
