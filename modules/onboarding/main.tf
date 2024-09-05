@@ -21,7 +21,7 @@ locals {
 }
 
 resource "google_service_account" "onboarding_auth" {
-  account_id   = "sysdig-onboarding-${local.suffix}"
+  account_id   = "sysdig-secure-onboarding-${local.suffix}"
   display_name = "Sysdig Onboarding Auth Service Account"
   project      = var.project_id
 }
@@ -42,13 +42,13 @@ resource "google_service_account_iam_binding" "onboarding_auth_binding" {
 
 resource "google_iam_workload_identity_pool" "onboarding_auth_pool" {
   project                   = var.project_id
-  workload_identity_pool_id = "sysdig-onboarding-${local.suffix}"
+  workload_identity_pool_id = "sysdig-secure-onboarding-${local.suffix}"
 }
 
 resource "google_iam_workload_identity_pool_provider" "onboarding_auth_pool_provider" {
   project                            = var.project_id
   workload_identity_pool_id          = google_iam_workload_identity_pool.onboarding_auth_pool.workload_identity_pool_id
-  workload_identity_pool_provider_id = "sysdig-onboarding-${local.suffix}"
+  workload_identity_pool_provider_id = "sysdig-secure-onboarding-${local.suffix}"
   display_name                       = "Sysdigcloud onboarding auth"
   description                        = "AWS identity pool provider for Sysdig Secure Data Onboarding resources"
   disabled                           = false
