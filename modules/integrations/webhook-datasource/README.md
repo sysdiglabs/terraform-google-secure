@@ -35,9 +35,9 @@ This module will also deploy a Webhook Datasource Component in Sysdig Backend fo
 
 | Name                                                             | Version   |
 |------------------------------------------------------------------|-----------|
-| <a name="provider_aws"></a> [google](#provider\_google)          | >= 4.21.0 |
+| <a name="provider_google"></a> [google](#provider\_google)       | >= 4.21.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.1    |
-| <a name="requirement_sysdig"></a> [sysdig](#requirement\_sysdig) |
+| <a name="requirement_sysdig"></a> [sysdig](#requirement\_sysdig) |           |
 
 
 ## Modules
