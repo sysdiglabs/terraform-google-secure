@@ -60,7 +60,6 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_is_organizational"></a> [is\_organizational](#input\_is\_organizational) | (Optional) Set this field to 'true' to deploy secure-for-cloud to a GCP Organization. | `bool` | `false` | no |
-| <a name="input_labels"></a> [labels](#input\_labels) | (Optional) Labels to be associated with Sysdig-originated resources | `map(string)` | <pre>{<br>  "originator": "sysdig"<br>}</pre> | no |
 | <a name="input_organization_domain"></a> [organization\_domain](#input\_organization\_domain) | Organization domain. e.g. sysdig.com | `string` | `""` | no |
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | (Required) Target Project identifier provided by the customer | `string` | n/a | yes |
 | <a name="input_external_id"></a> [external\_id](#input\_external\_id) | (Required) Random string generated unique to a customer | `string` | n/a | yes |
@@ -68,14 +67,12 @@ No modules.
 
 ## Outputs
 
-| Name | Description                                                                                    |
-|------|------------------------------------------------------------------------------------------------|
-| <a name="output_workload_identity_pool_id"></a> [workload\_identity\_pool\_id](#output\_workload\_identity\_pool\_id) | Id of Workload Identity Pool for authenticating to GCP to access onboarding resources          |
-| <a name="output_workload_identity_pool_provider_id"></a> [workload\_identity\_pool\_provider\_id](#output\_workload\_identity\_pool\_provider\_id) | Id of Workload Identity Pool Provider for authenticating to GCP to access onboarding resources |
-| <a name="output_workload_identity_project_number"></a> [workload\_identity\_project\_number](#output\_workload\_identity\_project\_number) | GCP project number                                                                             |
-| <a name="output_service_account_email"></a> [service\_account\_email](#output\_service\_account\_email) | email of the Service Account created                                                           |
-| <a name="output_sysdig_secure_project_id"></a> [sysdig\_secure\_project\_id](#output\_sysdig\_secure\_project\_id) | ID of the Sysdig Cloud Account created                                                         |
-| <a name="output_is_organizational"></a> [is\_organizational](#output\_is\_organizational) | Boolean value to indicate if secure-for-cloud is deployed to an entire GCP organization or not |
+| Name                                                                                                               | Description                                                                                    |
+|--------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| <a name="output_sysdig_secure_account_id"></a> [sysdig\_secure\_project\_id](#output\_sysdig\_secure\_account\_id) | ID of the Sysdig Cloud Account created                                                         |
+| <a name="output_is_organizational"></a> [is\_organizational](#output\_is\_organizational)                          | Boolean value to indicate if secure-for-cloud is deployed to an entire GCP organization or not |
+| <a name="output_organization_domain"></a> [organization\_domain](#output\_organization\_domain)                    | Organization domain of the GCP org being onboarded                                             |
+| <a name="output_project_id"></a> [project\_id](#output\_project\_id)                                               | The management project id chosen during install, where global resources are deployed           |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Authors
