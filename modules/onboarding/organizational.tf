@@ -26,7 +26,7 @@ resource "google_organization_iam_member" "browser" {
 # Call Sysdig Backend to create organization with foundational onboarding
 # (ensure it is called after all above cloud resources are created)
 #---------------------------------------------------------------------------------------------
-resource "sysdig_secure_organization" "azure_organization" {
+resource "sysdig_secure_organization" "google_organization" {
   count = var.is_organizational ? 1 : 0
 
   management_account_id   = sysdig_secure_cloud_auth_account.google_account.id

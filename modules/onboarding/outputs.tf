@@ -12,3 +12,8 @@ output "is_organizational" {
   value       = var.is_organizational
   description = "Boolean value to indicate if secure-for-cloud is deployed to an entire GCP organization or not"
 }
+
+output "organization_domain" {
+  value       = var.organization_domain
+  description = "Organization domain. e.g. sysdig.com"
+}

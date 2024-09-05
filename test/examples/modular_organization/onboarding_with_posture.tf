@@ -18,8 +18,26 @@ provider "sysdig" {
 }
 
 module "onboarding" {
-  source            = "../../../modules/onboarding"
-  project_id        = "org-child-project-3"
-  external_id       = "25ef0d887bc7a2b30089a025618e1c62"
-  is_organizational = true
+  source              = "../../../modules/onboarding"
+  project_id          = "org-child-project-3"
+  external_id         = "25ef0d887bc7a2b30089a025618e1c62"
+  is_organizational   = true
+  organization_domain = "draios.com"
+}
+
+module "config-posture" {
+  source                   = "../../../modules/config-posture"
+  project_id               = module.onboarding.project_id
+  external_id              = "25ef0d887bc7a2b30089a025618e1c62"
+  is_organizational        = module.onboarding.is_organizational
+  organization_domain      = module.onboarding.organization_domain
+  sysdig_secure_account_id = module.onboarding.sysdig_secure_account_id
+}
+
+resource "sysdig_secure_cloud_auth_account_feature" "config_posture" {
+  account_id = module.onboarding.sysdig_secure_account_id
+  type       = "FEATURE_SECURE_CONFIG_POSTURE"
+  enabled    = true
+  components = [module.config-posture.service_principal_component_id]
+  depends_on = [module.config-posture]
 }
