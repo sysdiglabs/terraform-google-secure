@@ -21,7 +21,7 @@ locals {
 }
 
 resource "google_service_account" "posture_auth" {
-  account_id   = "sysdig-posture-${local.suffix}"
+  account_id   = "sysdig-secure-posture-${local.suffix}"
   display_name = "Sysdig Config Posture Auth Service Account"
   project      = var.project_id
 }
@@ -42,13 +42,13 @@ resource "google_service_account_iam_binding" "posture_auth_binding" {
 
 resource "google_iam_workload_identity_pool" "posture_auth_pool" {
   project                   = var.project_id
-  workload_identity_pool_id = "sysdig-posture-${local.suffix}"
+  workload_identity_pool_id = "sysdig-secure-posture-${local.suffix}"
 }
 
 resource "google_iam_workload_identity_pool_provider" "posture_auth_pool_provider" {
   project                            = var.project_id
   workload_identity_pool_id          = google_iam_workload_identity_pool.posture_auth_pool.workload_identity_pool_id
-  workload_identity_pool_provider_id = "sysdig-posture-${local.suffix}"
+  workload_identity_pool_provider_id = "sysdig-secure-posture-${local.suffix}"
   display_name                       = "Sysdigcloud config posture auth"
   description                        = "AWS identity pool provider for Sysdig Secure Data Config Posture resources"
   disabled                           = false
