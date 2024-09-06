@@ -6,6 +6,8 @@ data "sysdig_secure_trusted_cloud_identity" "trusted_identity" {
   cloud_provider = "gcp"
 }
 
+data "sysdig_secure_tenant_external_id" "external_id" {}
+
 data "google_project" "project" {
   project_id = var.project_id
 }
@@ -54,7 +56,7 @@ resource "google_iam_workload_identity_pool_provider" "onboarding_auth_pool_prov
   description                        = "AWS identity pool provider for Sysdig Secure Data Onboarding resources"
   disabled                           = false
 
-  attribute_condition = "attribute.aws_role==\"arn:aws:sts::${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}:assumed-role/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_role_name}/${var.external_id}\""
+  attribute_condition = "attribute.aws_role==\"arn:aws:sts::${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}:assumed-role/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_role_name}/${data.sysdig_secure_tenant_external_id.external_id.external_id}\""
 
   attribute_mapping = {
     "google.subject"     = "assertion.arn",
@@ -81,7 +83,7 @@ resource "google_project_iam_member" "browser" {
 resource "google_service_account_iam_member" "custom_onboarding_auth" {
   service_account_id = google_service_account.onboarding_auth.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/${data.google_project.project.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.onboarding_auth_pool.workload_identity_pool_id}/attribute.aws_role/arn:aws:sts::${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}:assumed-role/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_role_name}/${var.external_id}"
+  member             = "principalSet://iam.googleapis.com/projects/${data.google_project.project.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.onboarding_auth_pool.workload_identity_pool_id}/attribute.aws_role/arn:aws:sts::${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}:assumed-role/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_role_name}/${data.sysdig_secure_tenant_external_id.external_id.external_id}"
 }
 
 #---------------------------------------------------------------------------------------------
