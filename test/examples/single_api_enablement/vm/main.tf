@@ -22,19 +22,18 @@ provider "google" {
 }
 
 // Enable API services for GCP project
-resource "google_project_service" "enable_cdr_ciem_apis" {
+resource "google_project_service" "enable_vm_apis" {
   project  = local.project
 
   for_each = toset(local.services)
   service = each.value
-  # TODO: Question? Leave a note to user that APIs will keep enabled when running a TF destroy here, makes sense?
   disable_on_destroy = false
 }
 
 # Output the projects and APIs enabled
 output "enabled_projects" {
-  value = distinct([for service in local.services : google_project_service.enable_cdr_ciem_apis[service].project])
+  value = distinct([for service in local.services : google_project_service.enable_vm_apis[service].project])
 }
 output "enabled_services" {
-  value = [for service in local.services : google_project_service.enable_cdr_ciem_apis[service].service]
+  value = [for service in local.services : google_project_service.enable_vm_apis[service].service]
 }

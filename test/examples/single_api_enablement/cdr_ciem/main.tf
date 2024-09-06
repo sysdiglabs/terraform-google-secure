@@ -27,7 +27,6 @@ resource "google_project_service" "enable_cdr_ciem_apis" {
 
   for_each = toset(local.services)
   service = each.value
-  # TODO: Question? Leave a note to user that APIs will keep enabled when running a TF destroy here, makes sense?
   disable_on_destroy = false
 }
 
