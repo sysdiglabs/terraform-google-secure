@@ -20,7 +20,6 @@ provider "sysdig" {
 module "onboarding" {
   source              = "../../../modules/onboarding"
   project_id          = "org-child-project-3"
-  external_id         = "25ef0d887bc7a2b30089a025618e1c62"
   is_organizational   = true
   organization_domain = "draios.com"
 }
@@ -28,7 +27,6 @@ module "onboarding" {
 module "config-posture" {
   source                   = "../../../modules/config-posture"
   project_id               = module.onboarding.project_id
-  external_id              = "25ef0d887bc7a2b30089a025618e1c62"
   is_organizational        = module.onboarding.is_organizational
   organization_domain      = module.onboarding.organization_domain
   sysdig_secure_account_id = module.onboarding.sysdig_secure_account_id
