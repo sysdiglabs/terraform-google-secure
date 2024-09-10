@@ -26,12 +26,12 @@
 
 module "webhook-datasource" {
   source              = "../../../modules/integrations/webhook-datasource"
-  project_id          = "org-child-project-1"
+  project_id          = module.onboarding.project_id
   # push_endpoint is no longer needed
   # push_endpoint       = "https://app-staging.sysdigcloud.com/api/cloudingestion/gcp/v2/84f934c6-eb2d-47d9-804b-bcfe9e6ef0b9"
-  is_organizational   = true
-  organization_domain = "draios.com"
-  sysdig_secure_account_id = ""
+  is_organizational   = module.onboarding.is_organizational
+  organization_domain = module.onboarding.organization_domain
+  sysdig_secure_account_id = module.onboarding.sysdig_secure_account_id
 }
 
 # UNCOMMENT TO TEST: THIS IS NOT GOING TO BE LONGER NEEDED, SINCE WILL BE PART OF FOUNDATIONAL

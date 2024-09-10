@@ -129,7 +129,7 @@ resource "google_service_account" "push_auth" {
 
 resource "google_service_account_iam_binding" "push_auth_binding" {
   service_account_id = google_service_account.push_auth.name
-  role               = "roles/iam.serviceAccountTokenCreator"
+  role               = "roles/iam.workloadIdentityUser"
 
   members = [
     "serviceAccount:${google_service_account.push_auth.email}",
@@ -228,6 +228,15 @@ resource "google_service_account_iam_member" "custom_auth" {
   service_account_id = google_service_account.push_auth.name
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/projects/${data.google_project.project.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.ingestion_auth_pool.workload_identity_pool_id}/attribute.aws_role/arn:aws:sts::${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}:assumed-role/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_role_name}/${data.sysdig_secure_tenant_external_id.external_id.external_id}"
+}
+
+# adding ciem role with permissions to the service account
+resource "google_project_iam_member" "identity_mgmt" {
+  for_each = var.is_organizational ? [] : toset(["roles/recommender.viewer", "roles/iam.serviceAccountViewer", "roles/iam.roleViewer", "roles/container.clusterViewer", "roles/compute.viewer"])
+
+  project = var.project_id
+  role    = each.key
+  member  = "serviceAccount:${google_service_account.push_auth.email}"
 }
 
 #-----------------------------------------------------------------------------------------------------------------------------------------

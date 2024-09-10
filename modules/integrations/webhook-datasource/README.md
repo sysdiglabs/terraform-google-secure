@@ -3,11 +3,8 @@
 This Module creates the resources required to send AuditLogs logs to Sysdig via GCP Pub Subscription. These resources enable Threat Detection in the given GCP project or organization.
 Before applying the changes defined in this module, the following operations need to be performed on the target GCP environment:
 
-- Enable the following APIs in the target environment (https://support.google.com/googleapi/answer/6158841?hl=en)
+- The APIs needed for the CDR/CIEM feature are listed below:
     - Cloud Pub/Sub API
-    - Identity and Access Management (IAM) API
-    - IAM Service Account Credentials API
-    - Cloud Resource Manager API
 
 - The following resources will be created in each instrumented project:
     - A `PubSub Topic` to send the AuditLogs from the project
