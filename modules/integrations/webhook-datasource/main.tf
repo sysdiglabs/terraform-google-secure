@@ -201,7 +201,7 @@ resource "google_project_iam_custom_role" "custom_ingestion_auth_role" {
   count = var.is_organizational ? 0 : 1
 
   project     = var.project_id
-  role_id     = "${var.role_name}-${local.suffix}"
+  role_id     = "${var.role_name}${local.suffix}"
   title       = "Sysdigcloud Ingestion Auth Role"
   description = "A Role providing the required permissions for Sysdig Backend to read cloud resources created for data ingestion"
   permissions = [
