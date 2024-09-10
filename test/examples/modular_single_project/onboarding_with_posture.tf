@@ -7,7 +7,7 @@ terraform {
   required_providers {
     sysdig = {
       source  = "sysdiglabs/sysdig"
-      version = "~> 1.29.2"
+      version = "~> 1.34.0"
     }
   }
 }
