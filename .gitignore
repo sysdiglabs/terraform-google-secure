@@ -29,6 +29,8 @@ override.tf.json
 .envrc
 **/.envrc
 
+/test/examples/**/**/*.json
+
 *.patch
 
 # MacOS
