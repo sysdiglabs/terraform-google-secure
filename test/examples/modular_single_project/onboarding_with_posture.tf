@@ -24,7 +24,7 @@ module "onboarding" {
 
 module "config-posture" {
   source                   = "../../../modules/config-posture"
-  project_id               = "org-child-project-3"
+  project_id               = module.onboarding.project_id
   sysdig_secure_account_id = module.onboarding.sysdig_secure_account_id
 }
 
