@@ -114,7 +114,14 @@ resource "sysdig_secure_cloud_auth_account" "google_account" {
     })
   }
 
-  depends_on = [google_service_account_iam_member.custom_onboarding_auth]
+  depends_on = [
+    google_service_account.onboarding_auth,
+    google_service_account_iam_binding.onboarding_auth_binding,
+    google_iam_workload_identity_pool.onboarding_auth_pool,
+    google_iam_workload_identity_pool_provider.onboarding_auth_pool_provider,
+    google_project_iam_member.browser,
+    google_service_account_iam_member.custom_onboarding_auth
+  ]
 
   lifecycle {
     ignore_changes = [
