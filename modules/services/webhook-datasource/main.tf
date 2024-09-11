@@ -52,6 +52,17 @@ resource "google_project_iam_audit_config" "audit_config" {
   }
 }
 
+#-------------------#
+# Cloud Pub/Sub API #
+#-------------------#
+
+resource "google_project_service" "pubsub_api" {
+  project = var.project_id
+  service = "pubsub.googleapis.com"
+
+  disable_on_destroy = false
+}
+
 #-----------------#
 # Ingestion topic #
 #-----------------#
@@ -61,6 +72,8 @@ resource "google_pubsub_topic" "ingestion_topic" {
   labels                     = var.labels
   project                    = var.project_id
   message_retention_duration = var.message_retention_duration
+
+  depends_on = [google_project_service.pubsub_api]
 }
 
 resource "google_pubsub_topic" "deadletter_topic" {
@@ -68,6 +81,8 @@ resource "google_pubsub_topic" "deadletter_topic" {
 
   project                    = var.project_id
   message_retention_duration = var.message_retention_duration
+
+  depends_on = [google_project_service.pubsub_api]
 }
 
 #------#
@@ -105,6 +120,8 @@ resource "google_pubsub_topic_iam_member" "publisher_iam_member" {
   topic   = google_pubsub_topic.ingestion_topic.name
   role    = "roles/pubsub.publisher"
   member  = var.is_organizational ? google_logging_organization_sink.ingestion_sink[0].writer_identity : google_logging_project_sink.ingestion_sink[0].writer_identity
+
+  depends_on = [google_project_service.pubsub_api]
 }
 
 #-------------------#
@@ -156,6 +173,8 @@ resource "google_pubsub_subscription" "ingestion_topic_push_subscription" {
     dead_letter_topic     = google_pubsub_topic.deadletter_topic.id
     max_delivery_attempts = var.max_delivery_attempts
   }
+
+  depends_on = [google_project_service.pubsub_api]
 }
 
 #------------------------------------------------------------------#
