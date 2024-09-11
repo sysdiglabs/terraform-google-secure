@@ -4,8 +4,10 @@
 #---------------------------------------------------------------------------------------------
 
 module "webhook-datasource" {
-  source        = "../../../modules/integrations/webhook-datasource"
-  project_id    = module.onboarding.project_id
+  source              = "../../../modules/integrations/pub-sub"
+  project_id          = module.onboarding.project_id
+  is_organizational   = module.onboarding.is_organizational
+  organization_domain = module.onboarding.organization_domain
   sysdig_secure_account_id = module.onboarding.sysdig_secure_account_id
 }
 

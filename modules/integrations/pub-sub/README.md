@@ -1,4 +1,4 @@
-# GCP Webhook Datasource Module
+# GCP PubSub Module
 
 This Module creates the resources required to send AuditLogs logs to Sysdig via GCP Pub Subscription. These resources enable Threat Detection in the given GCP project or organization.
 Before applying the changes defined in this module, the following operations need to be performed on the target GCP environment:

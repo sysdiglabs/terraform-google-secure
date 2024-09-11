@@ -240,7 +240,7 @@ resource "google_project_iam_member" "identity_mgmt" {
 }
 
 #-----------------------------------------------------------------------------------------------------------------------------------------
-# Call Sysdig Backend to add the webhook-datasource integration to the Sysdig Cloud Account
+# Call Sysdig Backend to add the pub-sub integration to the Sysdig Cloud Account
 #
 # Note (optional): To ensure this gets called after all cloud resources are created, add
 # explicit dependency using depends_on
