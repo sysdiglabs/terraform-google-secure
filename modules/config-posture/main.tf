@@ -104,5 +104,12 @@ resource "sysdig_secure_cloud_auth_account_component" "google_service_principal"
       email = google_service_account.posture_auth.email
     }
   })
-  depends_on = [google_service_account_iam_member.custom_posture_auth]
+  depends_on = [
+    google_service_account.posture_auth,
+    google_service_account_iam_binding.posture_auth_binding,
+    google_iam_workload_identity_pool.posture_auth_pool,
+    google_iam_workload_identity_pool_provider.posture_auth_pool_provider,
+    google_project_iam_member.cspm,
+    google_service_account_iam_member.custom_posture_auth
+  ]
 }

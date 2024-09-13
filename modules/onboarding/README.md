@@ -7,12 +7,12 @@ The Foundational Onboarding module serves the following functions:
 
 If instrumenting a project, the following resources will be created:
 - All the necessary `Service Accounts` and `Policies` to enable the Onboarding operation at the project level
-- A `Workload Identity Pool`, `Provider` and added custom role permissions to the `Service Account`, to allow Sysdig to authenticate to GCP on your behalf to validate resources.
+- A `Service Account key` and added role permissions to the `Service Account`, to allow Sysdig to authenticate to GCP on your behalf to validate resources.
 - A cloud account in the Sysdig Backend, associated with the GCP project and with the required component to serve the foundational functions.
 
 If instrumenting an Organziation, the following resources will be created:
 - All the necessary `Service Accounts` and `Policies` to enable the Onboarding operation at the organization level
-- A `Workload Identity Pool`, `Provider` and added custom role permissions to the `Service Account`, to allow Sysdig to authenticate to GCP on your behalf to validate resources.
+- A `Service Account key` and added role permissions to the `Service Account`, to allow Sysdig to authenticate to GCP on your behalf to validate resources.
 - A cloud account in the Sysdig Backend, associated with the management project and with the required component to serve the foundational functions.
 - A cloud organization in the Sysdig Backend, associated with the GCP Organization to fetch the organization structure to install Sysdig Secure for Cloud on.
 
