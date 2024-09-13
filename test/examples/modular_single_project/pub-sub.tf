@@ -22,5 +22,5 @@ resource "sysdig_secure_cloud_auth_account_feature" "identity_entitlement" {
   type       = "FEATURE_SECURE_IDENTITY_ENTITLEMENT"
   enabled    = true
   components = [module.pub-sub.pubsub_datasource_component_id]
-  depends_on = [sysdig_secure_cloud_auth_account_feature.config_posture, sysdig_secure_cloud_auth_account_feature.threat_detection]
+  depends_on = [sysdig_secure_cloud_auth_account_feature.config_posture]
 }
