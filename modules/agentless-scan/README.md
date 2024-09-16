@@ -3,7 +3,7 @@
 This Module creates the resources required to scan hosts on Google Cloud Projects. Before applying the changes defined 
 in this module, the following operations need to be performed on the target GCP environment:
 
-- The APIs needed for the CDR/CIEM feature are listed below:
+- The APIs needed for the VM feature are listed below:
     - Compute Engine API
 
 - The following resources will be created in each instrumented project:
@@ -82,9 +82,9 @@ No modules.
 
 ## Outputs
 
-| Name                                                                                                         | Description                                                                                     |
-|--------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
-| <a name="agentless_scan_component_id"></a> [agentless\_scan\_component\_id](#agentless\_scan\_component\_id) | Component identifier of Agentless Scan integration created in Sysdig Backend for Log Ingestion  |
+| Name                                                                                                         | Description                                                                         |
+|--------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| <a name="agentless_scan_component_id"></a> [agentless\_scan\_component\_id](#agentless\_scan\_component\_id) | Component identifier of Agentless Scan integration created in Sysdig Backend for VM |
 
 ## Authors
 
