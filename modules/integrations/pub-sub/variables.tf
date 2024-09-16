@@ -105,5 +105,5 @@ variable "ingestion_sink_filter" {
 
 variable "sysdig_secure_account_id" {
   type        = string
-  description = "ID of the Sysdig Cloud Account to enable Event Bridge integration for (incase of organization, ID of the Sysdig management account)"
+  description = "ID of the Sysdig Cloud Account to enable to enable Webhook Datasource integration for (incase of organization, ID of the Sysdig management account)"
 }
