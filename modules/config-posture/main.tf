@@ -44,7 +44,7 @@ resource "google_iam_workload_identity_pool_provider" "posture_auth_pool_provide
   workload_identity_pool_id          = google_iam_workload_identity_pool.posture_auth_pool.workload_identity_pool_id
   workload_identity_pool_provider_id = "sysdig-posture-${local.suffix}"
   display_name                       = "Sysdigcloud config posture auth"
-  description                        = "AWS identity pool provider for Sysdig Secure Data Config Posture resources"
+  description                        = "AWS based pool provider for Sysdig Secure Data Config Posture resources"
   disabled                           = false
 
   attribute_condition = "attribute.aws_role==\"arn:aws:sts::${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}:assumed-role/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_role_name}/${data.sysdig_secure_tenant_external_id.external_id.external_id}\""

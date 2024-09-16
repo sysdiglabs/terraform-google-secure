@@ -21,6 +21,12 @@ variable "suffix" {
   default     = null
 }
 
+variable "management_group_ids" {
+  type        = set(string)
+  description = "(Optional) Management group id to onboard. e.g. [organizations/123456789012], [folders/123456789012]"
+  default     = []
+}
+
 variable "sysdig_secure_account_id" {
   type        = string
   description = "ID of the Sysdig Cloud Account to enable Config Posture for (in case of organization, ID of the Sysdig management account)"

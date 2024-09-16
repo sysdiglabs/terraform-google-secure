@@ -1,8 +1,3 @@
-provider "google" {
-  project = "org-child-project-3"
-  region  = "us-west1"
-}
-
 terraform {
   required_providers {
     sysdig = {
@@ -17,6 +12,11 @@ provider "sysdig" {
   sysdig_secure_api_token = "API_TOKEN"
 }
 
+provider "google" {
+  project = "org-child-project-3"
+  region  = "us-west1"
+}
+
 module "onboarding" {
   source              = "../../../modules/onboarding"
   project_id          = "org-child-project-3"
@@ -29,6 +29,7 @@ module "config-posture" {
   project_id               = module.onboarding.project_id
   is_organizational        = module.onboarding.is_organizational
   organization_domain      = module.onboarding.organization_domain
+  management_group_ids     = module.onboarding.management_group_ids
   sysdig_secure_account_id = module.onboarding.sysdig_secure_account_id
 }
 

@@ -1,8 +1,3 @@
-provider "google" {
-  project = "org-child-project-3"
-  region  = "us-west1"
-}
-
 terraform {
   required_providers {
     sysdig = {
@@ -15,6 +10,11 @@ terraform {
 provider "sysdig" {
   sysdig_secure_url       = "https://secure-staging.sysdig.com"
   sysdig_secure_api_token = "API_TOKEN"
+}
+
+provider "google" {
+  project = "org-child-project-3"
+  region  = "us-west1"
 }
 
 module "onboarding" {
