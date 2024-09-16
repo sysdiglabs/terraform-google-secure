@@ -9,7 +9,6 @@ The APIs needed for the CDR/CIEM feature are listed below:
 
 # Set local variables for Organization ID and API services to enable
 locals {
-  organizationID = "933620940614"
   services = [
     "pubsub.googleapis.com"
   ]
@@ -33,7 +32,11 @@ provider "google" {
 
 # Get list of projects under the specified organization
 data "google_projects" "organization_projects" {
-  filter = "parent.type:organization parent.id:${local.organizationID}"
+  filter = "parent.type:organization parent.id:${data.google_organization.org.org_id}"
+}
+
+data "google_organization" "org" {
+  domain = "draios.com"
 }
 
 data "local_file" "projects_from_folder" {
@@ -65,7 +68,7 @@ resource "null_resource" "get_projects_from_folders" {
   provisioner "local-exec" {
     command = <<EOF
     #!/bin/bash
-    ORG_ID="933620940614"
+    ORG_DOMAIN="draios.com"
 
     # array to store project IDs
     declare -a FINAL_PROJECT_IDS
@@ -120,7 +123,15 @@ resource "null_resource" "get_projects_from_folders" {
       done
     }
 
-    echo "Listing all projects in folders for organization: $ORG_ID"
+    # start organization scraping
+    ORG_JSON=$(gcloud organizations list --filter="displayName:$ORG_DOMAIN" --format=json)
+    ORG_ID=$(echo "$ORG_JSON" | jq -r '.[0].name' | sed 's/organizations\///')
+    if [ -z "$ORG_ID" ]; then
+      echo "Organization with display name '$DISPLAY_NAME' not found."
+      exit 1
+    fi
+
+    echo "Listing all projects in folders for organization: $ORG_DOMAIN"
     list_folders_recursive "$ORG_ID" "organization"
     printf "%s\n" "$${FINAL_PROJECT_IDS[@]}" | jq -R . | jq -s . > "project_ids.json"
     echo "Projects listed and saved to local file."
