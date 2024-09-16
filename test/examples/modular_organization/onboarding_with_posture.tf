@@ -29,7 +29,6 @@ module "config-posture" {
   project_id               = module.onboarding.project_id
   is_organizational        = module.onboarding.is_organizational
   organization_domain      = module.onboarding.organization_domain
-  management_group_ids     = module.onboarding.management_group_ids
   sysdig_secure_account_id = module.onboarding.sysdig_secure_account_id
 }
 
