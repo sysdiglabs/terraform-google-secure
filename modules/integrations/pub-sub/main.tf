@@ -28,7 +28,7 @@ data "sysdig_secure_cloud_ingestion_assets" "assets" {}
 # These locals indicate the suffix to create unique name for resources
 #-----------------------------------------------------------------------------------------
 locals {
-  suffix = var.suffix == null ? random_id.suffix[0].hex : var.suffix
+  suffix    = var.suffix == null ? random_id.suffix[0].hex : var.suffix
   role_name = "SysdigIngestionAuthRole"
 }
 
