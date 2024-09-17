@@ -16,16 +16,16 @@ If instrumenting an Organziation, the following resources will be created:
 - A cloud account component in the Sysdig Backend, associated with the GCP project and with the required component to serve the config posture functions.
 
 Note:
-- The outputs from the foundational module, such as `sysdig_secure_project_id` are needed as inputs to the other features/integrations modules for subsequent modular installs.
+- The outputs from the foundational module, such as `sysdig_secure_account_id` are needed as inputs to the other features/integrations modules for subsequent modular installs.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| Name | Version   |
+|------|-----------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0  |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >= 4.21.0 |
-| <a name="requirement_sysdig"></a> [sysdig](#requirement\_sysdig) | >= 1.23.1 |
+| <a name="requirement_sysdig"></a> [sysdig](#requirement\_sysdig) | >= 1.34.0 |
 
 ## Providers
 
@@ -41,18 +41,17 @@ No modules.
 ## Resources
 
 | [google_service_account.posture_auth](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account) | resource |
-| [google_service_account_iam_binding.posture_auth_binding](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_binding) | resource |
 | [google_organization.org](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/organization) | data source |
 | [sysdig_secure_trusted_cloud_identity.trusted_identity](https://registry.terraform.io/providers/sysdiglabs/sysdig/latest/docs/data-sources/secure_trusted_cloud_identity) | data source |
 | [google_project.project](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/project) | data source |
+| [sysdig_secure_tenant_external_id](https://registry.terraform.io/providers/sysdiglabs/sysdig/latest/docs/data-sources/secure_tenant_external_id) | data source |
 | [random_id.suffix](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) | resource |
 | [google_iam_workload_identity_pool.posture_auth_pool](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/iam_workload_identity_pool) | resource |
 | [google_iam_workload_identity_pool_provider.posture_auth_pool_provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/iam_workload_identity_pool_provider) | resource |
-| [google_project_iam_custom_role.custom_posture_auth_role](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_iam_custom_role) | resource |
-| [google_project_iam_member.custom](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_iam#google_project_iam_member) | resource |
-| [google_service_account_iam_member.custom_auth](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_service_account_iam#google_service_account_iam_member) | resource |
-| [google_organization_iam_custom_role.custom_posture_auth_role](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_organization_iam_custom_role) | resource |
-| [google_organization_iam_member.custom](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_organization_iam#google_organization_iam_member) | resource |
+| [google_project_iam_member.cspm](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_iam#google_project_iam_member) | resource |
+| [google_service_account_iam_member.custom_posture_auth](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_service_account_iam#google_service_account_iam_member) | resource |
+| [google_organization_iam_member.cspm](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_organization_iam#google_organization_iam_member) | resource |
+| [sysdig_secure_cloud_auth_account_component.google_service_principal](https://registry.terraform.io/providers/sysdiglabs/sysdig/latest/docs/resources/secure_cloud_auth_account_component) | resource |
 
 ## Inputs
 
@@ -63,7 +62,6 @@ No modules.
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id)                                               | (Required) Target Project identifier provided by the customer                                                             | `string` | n/a                                           |   yes    |
 | <a name="input_suffix"></a> [suffix](#input\_suffix)                                                             | (Optional) Suffix to uniquely identify resources during multiple installs. If not provided, random value is autogenerated | `string` | `null`                                        |    no    |
 | <a name="input_sysdig_secure_account_id"></a> [sysdig\_secure\_account\_id](#input\_sysdig\_secure\_account\_id) | (Required) The GUID of the management project or single project per sysdig representation                                 | `string` | n/a                                           |   yes    |
-| <a name="input_management_group_ids"></a> [management\_group\_ids](#input\_management\_group\_ids)               | (Optional) Management group ids to onboard sub ogs or folders like 'organizations/sysdig.com' or 'folders/test-1'         | `string` | n/a                                           |    no    |
 
 ## Outputs
 
