@@ -29,15 +29,6 @@ resource "google_service_account" "posture_auth" {
   project      = var.project_id
 }
 
-resource "google_service_account_iam_binding" "posture_auth_binding" {
-  service_account_id = google_service_account.posture_auth.name
-  role               = "roles/iam.workloadIdentityUser"
-
-  members = [
-    "serviceAccount:${google_service_account.posture_auth.email}",
-  ]
-}
-
 #------------------------------------------------------------#
 # Configure Workload Identity Federation for auth            #
 # See https://cloud.google.com/iam/docs/access-resources-aws #
@@ -53,7 +44,7 @@ resource "google_iam_workload_identity_pool_provider" "posture_auth_pool_provide
   workload_identity_pool_id          = google_iam_workload_identity_pool.posture_auth_pool.workload_identity_pool_id
   workload_identity_pool_provider_id = "sysdig-posture-${local.suffix}"
   display_name                       = "Sysdigcloud config posture auth"
-  description                        = "AWS identity pool provider for Sysdig Secure Data Config Posture resources"
+  description                        = "AWS based pool provider for Sysdig Secure Data Config Posture resources"
   disabled                           = false
 
   attribute_condition = "attribute.aws_role==\"arn:aws:sts::${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}:assumed-role/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_role_name}/${data.sysdig_secure_tenant_external_id.external_id.external_id}\""
@@ -104,5 +95,11 @@ resource "sysdig_secure_cloud_auth_account_component" "google_service_principal"
       email = google_service_account.posture_auth.email
     }
   })
-  depends_on = [google_service_account_iam_member.custom_posture_auth]
+  depends_on = [
+    google_service_account.posture_auth,
+    google_iam_workload_identity_pool.posture_auth_pool,
+    google_iam_workload_identity_pool_provider.posture_auth_pool_provider,
+    google_project_iam_member.cspm,
+    google_service_account_iam_member.custom_posture_auth
+  ]
 }

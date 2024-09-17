@@ -28,13 +28,14 @@ data "sysdig_secure_cloud_ingestion_assets" "assets" {}
 # These locals indicate the suffix to create unique name for resources
 #-----------------------------------------------------------------------------------------
 locals {
-  suffix = var.suffix == null ? random_id.suffix[0].hex : var.suffix
+  suffix    = var.suffix == null ? random_id.suffix[0].hex : var.suffix
+  role_name = "SysdigIngestionAuthRole"
 }
 
 
 #-----------------------------------------------------------------------------------------------------------------------
-# A random resource is used to generate unique Webhook Datasource name suffix for resources.
-# This prevents conflicts when recreating an Webhook Datasource resources with the same name.
+# A random resource is used to generate unique Pub Sub name suffix for resources.
+# This prevents conflicts when recreating a Pub Sub resources with the same name.
 #-----------------------------------------------------------------------------------------------------------------------
 resource "random_id" "suffix" {
   count       = var.suffix == null ? 1 : 0
@@ -201,7 +202,7 @@ resource "google_project_iam_custom_role" "custom_ingestion_auth_role" {
   count = var.is_organizational ? 0 : 1
 
   project     = var.project_id
-  role_id     = "${var.role_name}${local.suffix}"
+  role_id     = "${local.role_name}${local.suffix}"
   title       = "Sysdigcloud Ingestion Auth Role"
   description = "A Role providing the required permissions for Sysdig Backend to read cloud resources created for data ingestion"
   permissions = [
@@ -246,7 +247,7 @@ resource "google_project_iam_member" "identity_mgmt" {
 # explicit dependency using depends_on
 #-----------------------------------------------------------------------------------------------------------------------------------------
 
-resource "sysdig_secure_cloud_auth_account_component" "gcp_webhook_datasource" {
+resource "sysdig_secure_cloud_auth_account_component" "gcp_pubsub_datasource" {
   account_id = var.sysdig_secure_account_id
   type       = "COMPONENT_WEBHOOK_DATASOURCE"
   instance   = "secure-runtime"
@@ -258,7 +259,7 @@ resource "sysdig_secure_cloud_auth_account_component" "gcp_webhook_datasource" {
         sink_name              = var.is_organizational ? google_logging_organization_sink.ingestion_sink[0].name : google_logging_project_sink.ingestion_sink[0].name
         push_subscription_name = google_pubsub_subscription.ingestion_topic_push_subscription.name
         push_endpoint          = google_pubsub_subscription.ingestion_topic_push_subscription.push_config[0].push_endpoint
-        routing_key            = "1f6d4677-84ec-4356-bd73-c79c8a96f96a"
+        routing_key            = data.sysdig_secure_cloud_ingestion_assets.assets.gcp_routing_key
       }
       service_principal = {
         workload_identity_federation = {
