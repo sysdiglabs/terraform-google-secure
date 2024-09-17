@@ -16,7 +16,7 @@ If instrumenting an Organziation, the following resources will be created:
 - A cloud account component in the Sysdig Backend, associated with the GCP project and with the required component to serve the config posture functions.
 
 Note:
-- The outputs from the foundational module, such as `sysdig_secure_project_id` are needed as inputs to the other features/integrations modules for subsequent modular installs.
+- The outputs from the foundational module, such as `sysdig_secure_account_id` are needed as inputs to the other features/integrations modules for subsequent modular installs.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
