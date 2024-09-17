@@ -147,20 +147,20 @@ resource "google_service_account_iam_member" "controller_custom_gcp" {
 # Custom IAM roles and bindings
 #-----------------------------------------------------------------------------------------
 
-resource "google_project_iam_custom_role" "controller" {
+resource "google_project_iam_custom_role" "controller_role" {
   count = var.is_organizational ? 0 : 1
 
   project     = var.project_id
-  role_id     = "${var.role_name}Discovery${local.suffix}"
-  title       = "${var.role_name}, for Host Discovery"
+  role_id     = "SysdigCloudVMDiscovery${local.suffix}"
+  title       = "SysdigCloudVM, for Host Discovery"
   permissions = local.host_discovery_permissions
 }
 
-resource "google_project_iam_binding" "controller_custom" {
+resource "google_project_iam_binding" "controller_binding" {
   count = var.is_organizational ? 0 : 1
 
   project = var.project_id
-  role    = google_project_iam_custom_role.controller[0].id
+  role    = google_project_iam_custom_role.controller_role[0].id
   members = [
     "serviceAccount:${google_service_account.controller.email}",
   ]
@@ -170,8 +170,8 @@ resource "google_project_iam_custom_role" "worker_role" {
   count = var.is_organizational ? 0 : 1
 
   project     = var.project_id
-  role_id     = "${var.role_name}Scan${local.suffix}"
-  title       = "${var.role_name}, for Host Scan"
+  role_id     = "SysdigCloudVMScan${local.suffix}"
+  title       = "SysdigCloudVM, for Host Scan"
   permissions = local.host_scan_permissions
 }
 

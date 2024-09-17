@@ -15,12 +15,6 @@ variable "organization_domain" {
   default     = ""
 }
 
-variable "role_name" {
-  type        = string
-  description = "Name for Sysdig operations on discovery and scan role"
-  default     = "SysdigCloudVM"
-}
-
 variable "sysdig_account_id" {
   type        = string
   description = "Sysdig provided GCP Account designated for the host scan. One of sysdig_backend or sysdig_account_id must be provided"

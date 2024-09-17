@@ -11,12 +11,12 @@ data "google_organization" "org" {
 # Custom IAM roles and bindings
 #-----------------------------------------------------------------------------------------
 
-resource "google_organization_iam_custom_role" "controller" {
+resource "google_organization_iam_custom_role" "controller_role" {
   count = var.is_organizational ? 1 : 0
 
   org_id      = data.google_organization.org[0].org_id
-  role_id     = "${var.role_name}Discovery${title(local.suffix)}"
-  title       = "${var.role_name}, for Host Discovery"
+  role_id     = "SysdigCloudVMDiscovery${local.suffix}"
+  title       = "SysdigCloudVM, for Host Discovery"
   permissions = local.host_discovery_permissions
 }
 
@@ -24,7 +24,7 @@ resource "google_organization_iam_binding" "controller_custom" {
   count = var.is_organizational ? 1 : 0
 
   org_id = data.google_organization.org[0].org_id
-  role   = google_organization_iam_custom_role.controller[0].id
+  role   = google_organization_iam_custom_role.controller_role[0].id
   members = [
     "serviceAccount:${google_service_account.controller.email}",
   ]
@@ -34,8 +34,8 @@ resource "google_organization_iam_custom_role" "worker_role" {
   count = var.is_organizational ? 1 : 0
 
   org_id      = data.google_organization.org[0].org_id
-  role_id     = "${var.role_name}Scan${title(local.suffix)}"
-  title       = "${var.role_name}, for Host Scan"
+  role_id     = "SysdigCloudVMScan${local.suffix}"
+  title       = "SysdigCloudVM, for Host Scan"
   permissions = local.host_scan_permissions
 }
 
