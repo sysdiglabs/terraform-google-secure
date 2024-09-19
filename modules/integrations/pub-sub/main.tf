@@ -73,14 +73,14 @@ resource "google_project_iam_audit_config" "audit_config" {
 # Ingestion Topic
 #-----------------------------------------------------------------------------------------
 resource "google_pubsub_topic" "ingestion_topic" {
-  name                       = "ingestion_topic${local.suffix}"
+  name                       = "ingestion_topic_${local.suffix}"
   labels                     = var.labels
   project                    = var.project_id
   message_retention_duration = var.message_retention_duration
 }
 
 resource "google_pubsub_topic" "deadletter_topic" {
-  name                       = "dl-${google_pubsub_topic.ingestion_topic.name}"
+  name                       = "dl_${google_pubsub_topic.ingestion_topic.name}"
   project                    = var.project_id
   message_retention_duration = var.message_retention_duration
 }
@@ -128,13 +128,10 @@ resource "google_service_account" "push_auth" {
   project      = var.project_id
 }
 
-resource "google_service_account_iam_binding" "push_auth_binding" {
+resource "google_service_account_iam_member" "push_auth_binding" {
   service_account_id = google_service_account.push_auth.name
   role               = "roles/iam.workloadIdentityUser"
-
-  members = [
-    "serviceAccount:${google_service_account.push_auth.email}",
-  ]
+  member             = "serviceAccount:${google_service_account.push_auth.email}"
 }
 
 resource "google_pubsub_subscription" "ingestion_topic_push_subscription" {
