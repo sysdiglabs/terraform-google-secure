@@ -73,7 +73,7 @@ resource "google_project_iam_audit_config" "audit_config" {
 # Ingestion Topic
 #-----------------------------------------------------------------------------------------
 resource "google_pubsub_topic" "ingestion_topic" {
-  name                       = "ingestion_topic"
+  name                       = "ingestion_topic${local.suffix}"
   labels                     = var.labels
   project                    = var.project_id
   message_retention_duration = var.message_retention_duration
