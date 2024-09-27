@@ -31,5 +31,8 @@ resource "sysdig_secure_organization" "google_organization" {
 
   management_account_id   = sysdig_secure_cloud_auth_account.google_account.id
   organizational_unit_ids = var.management_group_ids
-  depends_on              = [google_organization_iam_member.browser]
+  depends_on = [
+    google_organization_iam_member.browser,
+    sysdig_secure_cloud_auth_account.google_account
+  ]
 }
