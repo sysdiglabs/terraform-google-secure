@@ -5,6 +5,6 @@ output "pubsub_datasource_component_id" {
 }
 
 output "pubsub_datasource_routing_key" {
-  value = local.routing_key
+  value       = local.routing_key
   description = "Component routing key identifier of Webhook Datasource"
 }
