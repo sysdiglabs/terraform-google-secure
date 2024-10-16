@@ -29,10 +29,10 @@ data "sysdig_current_user" "user" {}
 # These locals indicate the suffix to create unique name for resources
 #-----------------------------------------------------------------------------------------
 locals {
-  suffix      = var.suffix == null ? random_id.suffix[0].hex : var.suffix
-  role_name   = "SysdigIngestionAuthRole"
-  key_name    = "${var.project_id}-${data.sysdig_current_user.user.id}"
-  routing_key = uuidv5("oid", local.key_name)
+  suffix        = var.suffix == null ? random_id.suffix[0].hex : var.suffix
+  role_name     = "SysdigIngestionAuthRole"
+  key_name      = "${var.project_id}-${data.sysdig_current_user.user.id}"
+  routing_key   = uuidv5("oid", local.key_name)
   ingestion_url = "${regex("^(.*)/[^/]+$", data.sysdig_secure_cloud_ingestion_assets.assets.gcp_metadata.ingestionURL)[0]}/${local.routing_key}"
 }
 
