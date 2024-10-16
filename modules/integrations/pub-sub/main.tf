@@ -24,18 +24,15 @@ data "sysdig_secure_tenant_external_id" "external_id" {}
 
 data "sysdig_secure_cloud_ingestion_assets" "assets" {}
 
-data "sysdig_current_user" "user" {}
 #-----------------------------------------------------------------------------------------
 # These locals indicate the suffix to create unique name for resources
 #-----------------------------------------------------------------------------------------
 locals {
   suffix        = var.suffix == null ? random_id.suffix[0].hex : var.suffix
   role_name     = "SysdigIngestionAuthRole"
-  key_name      = "${var.project_id}-${data.sysdig_current_user.user.id}"
-  routing_key   = uuidv5("oid", local.key_name)
+  routing_key   = random_uuid.routing_key.result
   ingestion_url = "${regex("^(.*)/[^/]+$", data.sysdig_secure_cloud_ingestion_assets.assets.gcp_metadata.ingestionURL)[0]}/${local.routing_key}"
 }
-
 
 #-----------------------------------------------------------------------------------------------------------------------
 # A random resource is used to generate unique Pub Sub name suffix for resources.
@@ -45,6 +42,12 @@ resource "random_id" "suffix" {
   count       = var.suffix == null ? 1 : 0
   byte_length = 3
 }
+
+
+#-----------------------------------------------------------------------------------------------------------------------
+# A random UUID is used to generate a unique identifier for the routing key per onboarded entity.
+#-----------------------------------------------------------------------------------------------------------------------
+resource "random_uuid" "routing_key" {}
 
 #-----------------------------------------------------------------------------------------
 # Audit Logs
