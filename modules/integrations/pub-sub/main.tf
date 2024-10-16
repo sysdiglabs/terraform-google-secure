@@ -22,7 +22,7 @@ data "google_project" "project" {
 
 data "sysdig_secure_tenant_external_id" "external_id" {}
 
-# data "sysdig_secure_cloud_ingestion_assets" "assets" {}
+data "sysdig_secure_cloud_ingestion_assets" "assets" {}
 
 data "sysdig_current_user" "user" {}
 #-----------------------------------------------------------------------------------------
@@ -33,6 +33,7 @@ locals {
   role_name   = "SysdigIngestionAuthRole"
   key_name    = "${var.project_id}-${data.sysdig_current_user.user.id}"
   routing_key = uuidv5("oid", local.key_name)
+  ingestion_url = "${regex("^(.*)/[^/]+$", data.sysdig_secure_cloud_ingestion_assets.assets.gcp_metadata.ingestionURL)[0]}/${local.routing_key}"
 }
 
 
@@ -146,8 +147,7 @@ resource "google_pubsub_subscription" "ingestion_topic_push_subscription" {
   project                    = var.project_id
 
   push_config {
-    push_endpoint = "https://app-staging.sysdigcloud.com/api/cloudingestion/gcp/v2/${local.routing_key}"
-    #   push_endpoint = data.sysdig_secure_cloud_ingestion_assets.assets.gcp_metadata.ingestionURL
+    push_endpoint = local.ingestion_url
     attributes = {
       x-goog-version = "v1"
     }
@@ -261,7 +261,6 @@ resource "sysdig_secure_cloud_auth_account_component" "gcp_pubsub_datasource" {
         push_subscription_name = google_pubsub_subscription.ingestion_topic_push_subscription.name
         push_endpoint          = google_pubsub_subscription.ingestion_topic_push_subscription.push_config[0].push_endpoint
         routing_key            = local.routing_key
-        #       routing_key            = data.sysdig_secure_cloud_ingestion_assets.assets.gcp_routing_key
       }
       service_principal = {
         workload_identity_federation = {
