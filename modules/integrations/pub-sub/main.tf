@@ -28,10 +28,11 @@ data "sysdig_secure_cloud_ingestion_assets" "assets" {}
 # These locals indicate the suffix to create unique name for resources
 #-----------------------------------------------------------------------------------------
 locals {
-  suffix    = var.suffix == null ? random_id.suffix[0].hex : var.suffix
-  role_name = "SysdigIngestionAuthRole"
+  suffix        = var.suffix == null ? random_id.suffix[0].hex : var.suffix
+  role_name     = "SysdigIngestionAuthRole"
+  routing_key   = random_uuid.routing_key.result
+  ingestion_url = "${regex("^(.*)/[^/]+$", data.sysdig_secure_cloud_ingestion_assets.assets.gcp_metadata.ingestionURL)[0]}/${local.routing_key}"
 }
-
 
 #-----------------------------------------------------------------------------------------------------------------------
 # A random resource is used to generate unique Pub Sub name suffix for resources.
@@ -41,6 +42,12 @@ resource "random_id" "suffix" {
   count       = var.suffix == null ? 1 : 0
   byte_length = 3
 }
+
+
+#-----------------------------------------------------------------------------------------------------------------------
+# A random UUID is used to generate a unique identifier for the routing key per onboarded entity.
+#-----------------------------------------------------------------------------------------------------------------------
+resource "random_uuid" "routing_key" {}
 
 #-----------------------------------------------------------------------------------------
 # Audit Logs
@@ -143,7 +150,7 @@ resource "google_pubsub_subscription" "ingestion_topic_push_subscription" {
   project                    = var.project_id
 
   push_config {
-    push_endpoint = data.sysdig_secure_cloud_ingestion_assets.assets.gcp_metadata.ingestionURL
+    push_endpoint = local.ingestion_url
     attributes = {
       x-goog-version = "v1"
     }
@@ -256,7 +263,7 @@ resource "sysdig_secure_cloud_auth_account_component" "gcp_pubsub_datasource" {
         sink_name              = var.is_organizational ? google_logging_organization_sink.ingestion_sink[0].name : google_logging_project_sink.ingestion_sink[0].name
         push_subscription_name = google_pubsub_subscription.ingestion_topic_push_subscription.name
         push_endpoint          = google_pubsub_subscription.ingestion_topic_push_subscription.push_config[0].push_endpoint
-        routing_key            = data.sysdig_secure_cloud_ingestion_assets.assets.gcp_routing_key
+        routing_key            = local.routing_key
       }
       service_principal = {
         workload_identity_federation = {
