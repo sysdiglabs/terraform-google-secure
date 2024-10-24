@@ -64,8 +64,7 @@ resource "google_iam_workload_identity_pool_provider" "posture_auth_pool_provide
 #---------------------------------------------------------------------------------------------
 resource "google_project_iam_member" "cspm" {
   # adding ciem role with permissions to the service account alongside cspm roles
-  for_each = var.is_organizational ? [] : toset(["roles/cloudasset.viewer", "roles/iam.workloadIdentityUser", "roles/logging.viewer", "roles/cloudfunctions.viewer", "roles/cloudbuild.builds.viewer", "roles/orgpolicy.policyViewer",
-  "roles/recommender.viewer", "roles/iam.serviceAccountViewer", "roles/iam.roleViewer", "roles/container.clusterViewer", "roles/compute.viewer"])
+  for_each = var.is_organizational ? [] : toset(["roles/cloudasset.viewer", "roles/iam.workloadIdentityUser", "roles/logging.viewer", "roles/cloudfunctions.viewer", "roles/cloudbuild.builds.viewer", "roles/orgpolicy.policyViewer", "roles/recommender.viewer", "roles/iam.serviceAccountViewer", "roles/iam.roleViewer", "roles/container.clusterViewer", "roles/compute.viewer"])
 
   project = var.project_id
   role    = each.key
