@@ -15,7 +15,8 @@ data "google_organization" "org" {
 # role permissions for CSPM (GCP Predefined Roles for Sysdig Cloud Secure Posture Management)
 #---------------------------------------------------------------------------------------------
 resource "google_organization_iam_member" "cspm" {
-  for_each = var.is_organizational ? toset(["roles/cloudasset.viewer", "roles/iam.workloadIdentityUser", "roles/logging.viewer", "roles/cloudfunctions.viewer", "roles/cloudbuild.builds.viewer", "roles/orgpolicy.policyViewer"]) : []
+  # adding ciem role with permissions to the service account alongside cspm roles
+  for_each = var.is_organizational ? toset(["roles/cloudasset.viewer", "roles/iam.workloadIdentityUser", "roles/logging.viewer", "roles/cloudfunctions.viewer", "roles/cloudbuild.builds.viewer", "roles/orgpolicy.policyViewer", "roles/recommender.viewer", "roles/iam.serviceAccountViewer", "roles/iam.roleViewer", "roles/container.clusterViewer", "roles/compute.viewer"]) : []
 
   org_id = data.google_organization.org[0].org_id
   role   = each.key
