@@ -84,12 +84,3 @@ resource "google_organization_iam_member" "custom" {
   role   = google_organization_iam_custom_role.custom_ingestion_auth_role[0].id
   member = "serviceAccount:${google_service_account.push_auth.email}"
 }
-
-# adding ciem role with permissions to the service account for org
-resource "google_organization_iam_member" "identity_mgmt" {
-  for_each = var.is_organizational ? toset(["roles/recommender.viewer", "roles/iam.serviceAccountViewer", "roles/iam.organizationRoleViewer", "roles/container.clusterViewer", "roles/compute.viewer"]) : []
-
-  org_id = data.google_organization.org[0].org_id
-  role   = each.key
-  member = "serviceAccount:${google_service_account.push_auth.email}"
-}
