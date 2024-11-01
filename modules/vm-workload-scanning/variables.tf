@@ -4,15 +4,15 @@ variable "project_id" {
 }
 
 variable "is_organizational" {
-    type        = bool
-    description = "Set this field to 'true' to deploy workload scanning to a GCP Organization."
-    default     = false
+  type        = bool
+  description = "Set this field to 'true' to deploy workload scanning to a GCP Organization."
+  default     = false
 }
 
 variable "organization_domain" {
   type        = string
   description = "(Optional) Organization domain. e.g. sysdig.com"
-  default     = ""
+  default     = false
 }
 
 # optionals

@@ -27,7 +27,7 @@ resource "google_organization_iam_member" "controller" {
     "storage.objects.list",
 
     # workload identity federation
-    "iam.serviceAccounts.getAccessToken"]) : []
+  "iam.serviceAccounts.getAccessToken"]) : []
 
   org_id = data.google_organization.org[0].org_id
   role   = each.key
