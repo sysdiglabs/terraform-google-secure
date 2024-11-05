@@ -15,12 +15,6 @@ variable "organization_domain" {
   default     = ""
 }
 
-variable "sysdig_account_id" {
-  type        = string
-  description = "Sysdig provided GCP Account designated for the host scan. One of sysdig_backend or sysdig_account_id must be provided"
-  default     = null
-}
-
 variable "sysdig_secure_account_id" {
   type        = string
   description = "ID of the Sysdig Cloud Account to enable Agentless Scanning integration for (in case of organization, ID of the Sysdig management account)"
