@@ -56,7 +56,7 @@ resource "google_iam_workload_identity_pool" "agentless" {
 }
 
 resource "google_iam_workload_identity_pool_provider" "agentless" {
-  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_type == "aws" ? 1 : 0
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? 1 : 0
 
   lifecycle {
     precondition {
@@ -86,7 +86,7 @@ resource "google_iam_workload_identity_pool_provider" "agentless" {
 }
 
 resource "google_service_account_iam_member" "controller_custom" {
-  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_type == "aws" ? 1 : 0
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? 1 : 0
 
   lifecycle {
     precondition {
@@ -101,7 +101,7 @@ resource "google_service_account_iam_member" "controller_custom" {
 }
 
 resource "google_iam_workload_identity_pool_provider" "agentless_gcp" {
-  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_type == "gcp" ? 1 : 0
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? 1 : 0
 
   lifecycle {
     precondition {
@@ -129,7 +129,7 @@ resource "google_iam_workload_identity_pool_provider" "agentless_gcp" {
 }
 
 resource "google_service_account_iam_member" "controller_custom_gcp" {
-  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_type == "gcp" ? 1 : 0
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? 1 : 0
 
   lifecycle {
     precondition {
@@ -200,7 +200,7 @@ resource "sysdig_secure_cloud_auth_account_component" "gcp_agentless_scan" {
   service_principal_metadata = jsonencode({
     gcp = {
       workload_identity_federation = {
-        pool_provider_id = data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_type == "aws" ? google_iam_workload_identity_pool_provider.agentless[0].name : data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_type == "gcp" ? google_iam_workload_identity_pool_provider.agentless_gcp[0].name : null
+        pool_provider_id = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? google_iam_workload_identity_pool_provider.agentless[0].name : data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? google_iam_workload_identity_pool_provider.agentless_gcp[0].name : null
       }
       email = google_service_account.controller.email
     }
