@@ -56,12 +56,12 @@ resource "google_iam_workload_identity_pool" "agentless" {
 }
 
 resource "google_iam_workload_identity_pool_provider" "agentless" {
-  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id != null ? 1 : 0
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? 1 : 0
 
   lifecycle {
     precondition {
-      condition     = (data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id != null && var.sysdig_account_id == null)
-      error_message = "Cannot provide both sysdig_backend or sysdig_account_id"
+      condition     = (data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id != null)
+      error_message = "Cannot provide empty sysdig backend cloud_id"
     }
   }
 
@@ -86,12 +86,12 @@ resource "google_iam_workload_identity_pool_provider" "agentless" {
 }
 
 resource "google_service_account_iam_member" "controller_custom" {
-  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id != null ? 1 : 0
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? 1 : 0
 
   lifecycle {
     precondition {
-      condition     = (data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id != null && var.sysdig_account_id == null)
-      error_message = "Cannot provide both sysdig_backend or sysdig_account_id"
+      condition     = (data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id != null)
+      error_message = "Cannot provide empty sysdig backend cloud_id"
     }
   }
 
@@ -101,12 +101,12 @@ resource "google_service_account_iam_member" "controller_custom" {
 }
 
 resource "google_iam_workload_identity_pool_provider" "agentless_gcp" {
-  count = var.sysdig_account_id != null ? 1 : 0
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? 1 : 0
 
   lifecycle {
     precondition {
-      condition     = (data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id == null && var.sysdig_account_id != null)
-      error_message = "Cannot provide both sysdig_backend or sysdig_account_id"
+      condition     = (data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id != null)
+      error_message = "Cannot provide empty sysdig backend cloud_id"
     }
   }
 
@@ -116,7 +116,7 @@ resource "google_iam_workload_identity_pool_provider" "agentless_gcp" {
   description                        = "GCP identity pool provider for Sysdig Secure Agentless Host Scanning"
   disabled                           = false
 
-  attribute_condition = "google.subject == \"${var.sysdig_account_id}\""
+  attribute_condition = "google.subject == \"${data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id}\""
 
   attribute_mapping = {
     "google.subject"  = "assertion.sub"
@@ -129,18 +129,18 @@ resource "google_iam_workload_identity_pool_provider" "agentless_gcp" {
 }
 
 resource "google_service_account_iam_member" "controller_custom_gcp" {
-  count = var.sysdig_account_id != null ? 1 : 0
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? 1 : 0
 
   lifecycle {
     precondition {
-      condition     = (data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id == null && var.sysdig_account_id != null)
-      error_message = "Cannot provide both sysdig_backend or sysdig_account_id"
+      condition     = (data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id != null)
+      error_message = "Cannot provide empty sysdig backend cloud_id"
     }
   }
 
   service_account_id = google_service_account.controller.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.sa_id/${var.sysdig_account_id}"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.sa_id/${data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id}"
 }
 
 #-----------------------------------------------------------------------------------------
@@ -200,7 +200,7 @@ resource "sysdig_secure_cloud_auth_account_component" "gcp_agentless_scan" {
   service_principal_metadata = jsonencode({
     gcp = {
       workload_identity_federation = {
-        pool_provider_id = data.sysdig_secure_agentless_scanning_assets.assets.gcp.worker_identity != null ? google_iam_workload_identity_pool_provider.agentless[0].name : var.sysdig_account_id != null ? google_iam_workload_identity_pool_provider.agentless_gcp[0].name : null
+        pool_provider_id = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? google_iam_workload_identity_pool_provider.agentless[0].name : data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? google_iam_workload_identity_pool_provider.agentless_gcp[0].name : null
       }
       email = google_service_account.controller.email
     }
