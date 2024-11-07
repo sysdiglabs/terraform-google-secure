@@ -1,3 +1,15 @@
+locals {
+  suffix = random_id.suffix[0].hex
+}
+
+resource "random_id" "suffix" {
+  byte_length = 3
+}
+
+data "google_project" "project" {
+  project_id = var.project_id
+}
+
 data "sysdig_secure_trusted_cloud_identity" "trusted_identity" {
   cloud_provider = "gcp"
 }
@@ -30,7 +42,7 @@ resource "google_project_iam_custom_role" "controller" {
   ]
 }
 
-resource "google_project_iam_binding" "controller_custom" {
+resource "google_project_iam_binding" "controller_binding" {
   project = var.project_id
   role    = google_project_iam_custom_role.controller.id
 
@@ -65,7 +77,7 @@ resource "google_iam_workload_identity_pool_provider" "agentless" {
   }
 }
 
-resource "google_service_account_iam_member" "controller_custom" {
+resource "google_service_account_iam_member" "controller_binding" {
   service_account_id = google_service_account.controller.name
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/projects/${data.google_project.project.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.agentless.workload_identity_pool_id}/attribute.aws_role/arn:aws:sts::${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}:assumed-role/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_role_name}/${data.sysdig_secure_tenant_external_id.external_id.external_id}"
@@ -73,7 +85,7 @@ resource "google_service_account_iam_member" "controller_custom" {
 
 
 #--------------------------------------------------------------------------------------------------------------
-# Call Sysdig Backend to add the service-principal integration for Config Posture to the Sysdig Cloud Account
+# Call Sysdig Backend to add the service-principal integration for VM Workload Scanning to the Sysdig Cloud Account
 #--------------------------------------------------------------------------------------------------------------
 resource "sysdig_secure_cloud_auth_account_component" "google_service_principal" {
   account_id = var.sysdig_secure_account_id
@@ -93,7 +105,7 @@ resource "sysdig_secure_cloud_auth_account_component" "google_service_principal"
   depends_on = [
     google_service_account.controller,
     google_project_iam_custom_role.controller,
-    google_project_iam_binding.controller_custom,
+    google_project_iam_binding.controller_binding,
     google_iam_workload_identity_pool.agentless,
     google_organization_iam_member.controller,
   ]

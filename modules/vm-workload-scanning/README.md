@@ -41,13 +41,13 @@ No modules.
 
 ### Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| project_id | GCP Project ID | string | n/a | yes |
-| is_organizational | Set this field to 'true' to deploy workload scanning to a GCP Organization. | bool | false | no |
-| organization_domain | (Optional) Organization domain. e.g. sysdig.com | string | "" | no |
-| role_name | Name for the Worker Role on the Customer infrastructure | string | "SysdigAgentlessWorkloadRole" | no |
-| sysdig_secure_account_id | ID of the Sysdig Cloud Account to enable Config Posture for (in case of organization, ID of the Sysdig management account) | string | n/a | yes |
+| Name | Description                                                                                                                      | Type | Default | Required |
+|------|----------------------------------------------------------------------------------------------------------------------------------|------|---------|:--------:|
+| project_id | GCP Project ID                                                                                                                   | string | n/a | yes |
+| is_organizational | Set this field to 'true' to deploy workload scanning to a GCP Organization.                                                      | bool | false | no |
+| organization_domain | (Optional) Organization domain. e.g. sysdig.com                                                                                  | string | "" | no |
+| role_name | Name for the Worker Role on the Customer infrastructure                                                                          | string | "SysdigAgentlessWorkloadRole" | no |
+| sysdig_secure_account_id | ID of the Sysdig Cloud Account to enable VM Workload Scanning for (in case of organization, ID of the Sysdig management account) | string | n/a | yes |
 
 ### Outputs
 
