@@ -90,7 +90,7 @@ resource "google_service_account_iam_member" "controller_binding" {
 resource "sysdig_secure_cloud_auth_account_component" "google_service_principal" {
   account_id = var.sysdig_secure_account_id
   type       = "COMPONENT_SERVICE_PRINCIPAL"
-  instance   = "secure-posture"
+  instance   = "secure-vm-workload-scanning"
   version    = "v0.1.0"
   service_principal_metadata = jsonencode({
     gcp = {
