@@ -1,5 +1,5 @@
 locals {
-  suffix = random_id.suffix[0].hex
+  suffix = random_id.suffix.hex
 }
 
 resource "random_id" "suffix" {
