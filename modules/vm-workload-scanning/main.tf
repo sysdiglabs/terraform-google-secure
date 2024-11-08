@@ -66,10 +66,8 @@ resource "google_iam_workload_identity_pool_provider" "agentless" {
   attribute_condition = "attribute.aws_role==\"arn:aws:sts::${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}:assumed-role/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_role_name}/${data.sysdig_secure_tenant_external_id.external_id.external_id}\""
 
   attribute_mapping = {
-    "google.subject"        = "assertion.arn"
-    "attribute.aws_account" = "assertion.account"
-    "attribute.role"        = "assertion.arn.extract(\"/assumed-role/{role}/\")"
-    "attribute.session"     = "assertion.arn.extract(\"/assumed-role/{role_and_session}/\").extract(\"/{session}\")"
+    "google.subject"     = "assertion.arn",
+    "attribute.aws_role" = "assertion.arn"
   }
 
   aws {
