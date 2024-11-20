@@ -63,7 +63,7 @@ resource "google_iam_workload_identity_pool_provider" "posture_auth_pool_provide
 # role permissions for CSPM (GCP Predefined Roles for Sysdig Cloud Secure Posture Management)
 #---------------------------------------------------------------------------------------------
 resource "google_project_iam_member" "cspm" {
-  for_each = var.is_organizational ? [] : toset(["roles/cloudasset.viewer", "roles/iam.workloadIdentityUser", "roles/logging.viewer", "roles/cloudfunctions.viewer", "roles/cloudbuild.builds.viewer", "roles/orgpolicy.policyViewer"])
+  for_each = var.is_organizational ? [] : toset(["roles/cloudasset.viewer", "roles/iam.workloadIdentityUser", "roles/logging.viewer", "roles/cloudfunctions.viewer", "roles/cloudbuild.builds.viewer", "roles/orgpolicy.policyViewer", "roles/container.clusterViewer", "roles/compute.viewer"])
 
   project = var.project_id
   role    = each.key
