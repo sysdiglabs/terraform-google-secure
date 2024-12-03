@@ -14,8 +14,6 @@ data "sysdig_secure_trusted_cloud_identity" "trusted_identity" {
   cloud_provider = "gcp"
 }
 
-data "sysdig_secure_tenant_external_id" "external_id" {}
-
 resource "google_service_account" "controller" {
   project      = var.project_id
   account_id   = "sysdig-ws-${local.suffix}"
