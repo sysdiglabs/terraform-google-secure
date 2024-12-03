@@ -63,11 +63,13 @@ resource "google_iam_workload_identity_pool_provider" "agentless" {
   description                        = "AWS identity pool provider for Sysdig Secure Agentless Workload Scanning"
   disabled                           = false
 
-  attribute_condition = "attribute.aws_role==\"arn:aws:sts::${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}:assumed-role/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_role_name}/${data.sysdig_secure_tenant_external_id.external_id.external_id}\""
+  attribute_condition = "attribute.aws_account==\"${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}\""
 
   attribute_mapping = {
-    "google.subject"     = "assertion.arn",
-    "attribute.aws_role" = "assertion.arn"
+    "google.subject"        = "assertion.arn"
+    "attribute.aws_account" = "assertion.account"
+    "attribute.role"        = "assertion.arn.extract(\"/assumed-role/{role}/\")"
+    "attribute.session"     = "assertion.arn.extract(\"/assumed-role/{role_and_session}/\").extract(\"/{session}\")"
   }
 
   aws {
@@ -78,7 +80,7 @@ resource "google_iam_workload_identity_pool_provider" "agentless" {
 resource "google_service_account_iam_member" "controller_binding" {
   service_account_id = google_service_account.controller.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/${data.google_project.project.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.agentless.workload_identity_pool_id}/attribute.aws_role/arn:aws:sts::${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}:assumed-role/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_role_name}/${data.sysdig_secure_tenant_external_id.external_id.external_id}"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.aws_account/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}"
 }
 
 
