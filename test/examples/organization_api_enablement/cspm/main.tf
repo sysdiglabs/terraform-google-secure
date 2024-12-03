@@ -82,6 +82,7 @@ output "enabled_services" {
 # Script to get projects from folders recursively and set to a file
 resource "null_resource" "get_projects_from_folders" {
   provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
     command = <<EOF
     #!/bin/bash
     ORG_DOMAIN="draios.com"
