@@ -1,3 +1,4 @@
 * @sysdiglabs/team-secure-onboarding
 /modules/services/agentless-scan/* @sysdiglabs/team-agentless
 /modules/services/workload-scan/* @sysdiglabs/team-agentless
+/modules/vm-workload-scanning/* @sysdiglabs/team-agentless
