@@ -55,7 +55,7 @@ resource "google_project_iam_binding" "controller_binding" {
 }
 
 resource "google_iam_workload_identity_pool" "agentless" {
-  workload_identity_pool_id = "sysdig-${local.suffix}"
+  workload_identity_pool_id = "sysdig-wl-${local.suffix}"
 }
 
 resource "google_iam_workload_identity_pool_provider" "agentless" {
@@ -94,7 +94,7 @@ resource "google_iam_workload_identity_pool_provider" "agentless_gcp" {
   count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? 1 : 0
 
   workload_identity_pool_id          = google_iam_workload_identity_pool.agentless.workload_identity_pool_id
-  workload_identity_pool_provider_id = "sysdig-${local.suffix}"
+  workload_identity_pool_provider_id = "sysdig-wl-${local.suffix}"
   display_name                       = "Sysdig Agentless Workload"
   description                        = "GCP identity pool provider for Sysdig Secure Agentless Workload Scanning"
   disabled                           = false
