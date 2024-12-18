@@ -7,40 +7,9 @@ module "pub-sub" {
   source        = "../../../modules/integrations/pub-sub"
   project_id    = module.onboarding.project_id
   sysdig_secure_account_id = module.onboarding.sysdig_secure_account_id
-  ingestion_sink_filter = "protoPayload.@type = \"type.googleapis.com/google.cloud.audit.AuditLog\" (protoPayload.methodName!~ \"\\.(get|list)$\" OR protoPayload.serviceName != (\"k8s.io\" and \"storage.googleapis.com\"))"
-  audit_log_config = [
-    {
-      service = "cloudsql.googleapis.com"
-      log_config = [{ log_type = "DATA_READ",
-        exempted_members = [
-          "serviceAccount:my-sa@my-project.iam.gserviceaccount.com",
-        ]
-        },
-        { log_type = "DATA_WRITE" }
-      ]
-    },
-    {
-      service = "storage.googleapis.com"
-      log_config = [{ log_type = "DATA_WRITE"
-      }]
-    },
-    {
-      service    = "container.googleapis.com"
-      log_config = [{ log_type = "DATA_READ" }]
-    }
-  ]
-  exclude_logs_filter = [
-    {
-      name        = "nsexcllusion2"
-      description = "Exclude logs from namespace-2 in k8s"
-      filter      = "resource.type = k8s_container resource.labels.namespace_name=\"namespace-2\" "
-    },
-    {
-      name        = "nsexcllusion1"
-      description = "Exclude logs from namespace-1 in k8s"
-      filter      = "resource.type = k8s_container resource.labels.namespace_name=\"namespace-1\" "
-    }
-  ]
+  ingestion_sink_filter = ""
+  audit_log_config = []
+  exclude_logs_filter = []
 }
 
 resource "sysdig_secure_cloud_auth_account_feature" "threat_detection" {
