@@ -1,2 +1,2 @@
 lint:
-	tflint --recursive --module
+	tflint --recursive --call-module-type=all
