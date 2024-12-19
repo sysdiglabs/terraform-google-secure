@@ -131,7 +131,7 @@ resource "sysdig_secure_cloud_auth_account_component" "google_service_principal"
     gcp = {
       workload_identity_federation = {
         pool_id          = google_iam_workload_identity_pool.agentless.workload_identity_pool_id
-        pool_provider_id = data.sysdig_secure_agentless_scanning_assets.assets.backend == "aws" ? google_iam_workload_identity_pool_provider.agentless[0].workload_identity_pool_provider_id : google_iam_workload_identity_pool_provider.agentless_gcp[0].workload_identity_pool_provider_id
+        pool_provider_id = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? google_iam_workload_identity_pool_provider.agentless[0].workload_identity_pool_provider_id : google_iam_workload_identity_pool_provider.agentless_gcp[0].workload_identity_pool_provider_id
         project_number   = data.google_project.project.number
       }
       email = google_service_account.controller.email
