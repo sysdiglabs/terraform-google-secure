@@ -54,10 +54,12 @@ resource "random_uuid" "routing_key" {}
 #-----------------------------------------------------------------------------------------
 locals {
   # Data structure will be a map for each service, that can have multiple audit_log_config
-  audit_log_config = { for audit in var.audit_log_config :
+  audit_log_config = {
+    for audit in var.audit_log_config :
     audit["service"] => {
       log_config = audit["log_config"]
     }
+    if length(audit["log_config"]) > 0 # Include only if log_config is not empty
   }
 }
 
