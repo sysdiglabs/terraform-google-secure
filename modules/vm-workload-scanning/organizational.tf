@@ -17,9 +17,9 @@ data "google_organization" "org" {
 resource "google_organization_iam_custom_role" "custom_role" {
   count = var.is_organizational ? 1 : 0
 
-  org_id    = data.google_organization.org[0].org_id
-  role_id   = "vmWorkloadScanningRole"
-  title     = "VM Workload Scanning Role"
+  org_id  = data.google_organization.org[0].org_id
+  role_id = "vmWorkloadScanningRole"
+  title   = "VM Workload Scanning Role"
   permissions = [
     "artifactregistry.repositories.downloadArtifacts",
     "artifactregistry.repositories.get",
