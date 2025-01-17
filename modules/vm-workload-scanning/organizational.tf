@@ -14,9 +14,13 @@ data "google_organization" "org" {
 #---------------------------------------------------------------------------------------------
 # role permissions for CSPM (GCP Predefined Roles for Sysdig Cloud Secure Posture Management)
 #---------------------------------------------------------------------------------------------
-resource "google_organization_iam_member" "controller" {
-  # adding ciem role with permissions to the service account alongside cspm roles
-  for_each = var.is_organizational ? toset([
+resource "google_organization_iam_custom_role" "custom_role" {
+  count = var.is_organizational ? 1 : 0
+
+  org_id    = data.google_organization.org[0].org_id
+  role_id   = "vmWorkloadScanningRole"
+  title     = "VM Workload Scanning Role"
+  permissions = [
     "artifactregistry.repositories.downloadArtifacts",
     "artifactregistry.repositories.get",
     "artifactregistry.repositories.list",
@@ -25,9 +29,14 @@ resource "google_organization_iam_member" "controller" {
     "storage.objects.get",
     "storage.buckets.list",
     "storage.objects.list",
+    "iam.serviceAccounts.getAccessToken"
+  ]
+}
 
-    # workload identity federation
-  "iam.serviceAccounts.getAccessToken"]) : []
+resource "google_organization_iam_member" "controller" {
+  for_each = var.is_organizational ? toset([
+    "roles/${google_organization_iam_custom_role.custom_role[0].role_id}"
+  ]) : []
 
   org_id = data.google_organization.org[0].org_id
   role   = each.key
