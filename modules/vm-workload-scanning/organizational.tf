@@ -35,7 +35,7 @@ resource "google_organization_iam_custom_role" "custom_role" {
 
 resource "google_organization_iam_member" "controller" {
   for_each = var.is_organizational ? toset([
-    "roles/${google_organization_iam_custom_role.custom_role[0].role_id}"
+    "organizations/${data.google_organization.org[0].org_id}/roles/${google_organization_iam_custom_role.custom_role[0].role_id}"
   ]) : []
 
   org_id = data.google_organization.org[0].org_id
