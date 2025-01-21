@@ -100,6 +100,7 @@ resource "google_pubsub_topic" "deadletter_topic" {
 resource "google_logging_project_sink" "ingestion_sink" {
   count       = var.is_organizational ? 0 : 1
   name        = "${google_pubsub_topic.ingestion_topic.name}_sink"
+  project     = var.project_id
   description = "Sysdig sink to direct the AuditLogs to the PubSub topic used for data gathering"
 
   # NOTE: The target destination is a PubSub topic
