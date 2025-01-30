@@ -34,11 +34,9 @@ resource "google_organization_iam_custom_role" "custom_role" {
 }
 
 resource "google_organization_iam_member" "controller" {
-  for_each = var.is_organizational ? toset([
-    "organizations/${data.google_organization.org[0].org_id}/roles/${google_organization_iam_custom_role.custom_role[0].role_id}"
-  ]) : []
+  count = var.is_organizational ? 1 : 0
 
   org_id = data.google_organization.org[0].org_id
-  role   = each.key
+  role   = "organizations/${data.google_organization.org[0].org_id}/roles/${google_organization_iam_custom_role.custom_role[0].role_id}"
   member = "serviceAccount:${google_service_account.controller.email}"
 }
