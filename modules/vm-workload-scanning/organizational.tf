@@ -12,13 +12,13 @@ data "google_organization" "org" {
 ###################################################
 
 #---------------------------------------------------------------------------------------------
-# role permissions for CSPM (GCP Predefined Roles for Sysdig Cloud Secure Posture Management)
+# role permissions for VM Workload Scanning
 #---------------------------------------------------------------------------------------------
 resource "google_organization_iam_custom_role" "custom_role" {
   count = var.is_organizational ? 1 : 0
 
   org_id  = data.google_organization.org[0].org_id
-  role_id = "vmWorkloadScanningRole"
+  role_id = "${var.role_name}vmWorkloadScanningRole${title(local.suffix)}"
   title   = "VM Workload Scanning Role"
   permissions = [
     "artifactregistry.repositories.downloadArtifacts",
