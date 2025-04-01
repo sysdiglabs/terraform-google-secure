@@ -42,5 +42,11 @@ resource "sysdig_secure_cloud_auth_account_feature" "identity_entitlement_basic"
   enabled    = true
   components = [module.config-posture.service_principal_component_id]
   depends_on = [module.config-posture, sysdig_secure_cloud_auth_account_feature.config_posture]
-  flags = {"CIEM_FEATURE_MODE": "basic"}
+  flags = {
+    "CIEM_FEATURE_MODE": "basic"
+  }
+
+  lifecycle {
+    ignore_changes = [flags]
+  }
 }
