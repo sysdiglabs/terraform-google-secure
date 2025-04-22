@@ -11,7 +11,7 @@ locals {
   check_old_management_group_ids_param = var.is_organizational && length(var.management_group_ids) > 0
 
   # fetch the GCP root org
-  root_org = var.is_organizational ? [data.google_organization.org[0].org_id] : []
+  root_org = var.is_organizational ? [data.google_organization.org[0].name] : []
 }
 
 check "validate_org_configuration_params" {
