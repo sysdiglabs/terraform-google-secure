@@ -48,11 +48,6 @@ No modules.
 | organization_domain                                                       | (Optional) Organization domain. e.g. sysdig.com                                                                                  | string        | ""                            |    no    |
 | role_name                                                                 | Name for the Worker Role on the Customer infrastructure                                                                          | string        | "SysdigAgentlessWorkloadRole" |    no    |
 | sysdig_secure_account_id                                                  | ID of the Sysdig Cloud Account to enable VM Workload Scanning for (in case of organization, ID of the Sysdig management account) | string        | n/a                           |   yes    |
-| <a name="input_include_folders"></a> [suffix](#input\_include\_folders)   | folders to include for organization                                                                                              | `set(string)` | `[]`                          |    no    |
-| <a name="input_exclude_folders"></a> [suffix](#input\_exclude\_folders)   | folders to exclude for organization                                                                                              | `set(string)` | `[]`                          |    no    |
-| <a name="input_include_projects"></a> [suffix](#input\_include\_projects) | projects to include for organization                                                                                             | `set(string)` | `[]`                          |    no    |
-| <a name="input_exclude_projects"></a> [suffix](#input\_exclude\_projects) | projects to exclude for organization                                                                                             | `set(string)` | `[]`                          |    no    |
-
 
 ### Outputs
 
