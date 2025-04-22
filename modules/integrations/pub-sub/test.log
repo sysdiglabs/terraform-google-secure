@@ -1,0 +1,30 @@
+2024-10-16T03:29:17.754-0600 [INFO]  Terraform version: 1.5.7
+2024-10-16T03:29:17.754-0600 [DEBUG] using github.com/hashicorp/go-tfe v1.26.0
+2024-10-16T03:29:17.754-0600 [DEBUG] using github.com/hashicorp/hcl/v2 v2.16.2
+2024-10-16T03:29:17.754-0600 [DEBUG] using github.com/hashicorp/terraform-svchost v0.1.0
+2024-10-16T03:29:17.754-0600 [DEBUG] using github.com/zclconf/go-cty v1.12.2
+2024-10-16T03:29:17.754-0600 [INFO]  Go runtime version: go1.22.2
+2024-10-16T03:29:17.754-0600 [INFO]  CLI args: []string{"terraform", "fmt"}
+2024-10-16T03:29:17.754-0600 [DEBUG] Attempting to open CLI config file: /Users/jose.camacho/.terraformrc
+2024-10-16T03:29:17.754-0600 [DEBUG] File doesn't exist, but doesn't need to. Ignoring.
+2024-10-16T03:29:17.755-0600 [DEBUG] checking for credentials in "/Users/jose.camacho/.terraform.d/plugins"
+2024-10-16T03:29:17.755-0600 [DEBUG] ignoring non-existing provider search directory terraform.d/plugins
+2024-10-16T03:29:17.755-0600 [DEBUG] will search for provider plugins in /Users/jose.camacho/.terraform.d/plugins
+2024-10-16T03:29:17.756-0600 [DEBUG] ignoring non-existing provider search directory /Users/jose.camacho/Library/Application Support/io.terraform/plugins
+2024-10-16T03:29:17.756-0600 [DEBUG] ignoring non-existing provider search directory /Library/Application Support/io.terraform/plugins
+2024-10-16T03:29:17.757-0600 [INFO]  CLI command args: []string{"fmt"}
+2024-10-16T13:30:53.059-0600 [INFO]  Terraform version: 1.5.7
+2024-10-16T13:30:53.060-0600 [DEBUG] using github.com/hashicorp/go-tfe v1.26.0
+2024-10-16T13:30:53.060-0600 [DEBUG] using github.com/hashicorp/hcl/v2 v2.16.2
+2024-10-16T13:30:53.060-0600 [DEBUG] using github.com/hashicorp/terraform-svchost v0.1.0
+2024-10-16T13:30:53.060-0600 [DEBUG] using github.com/zclconf/go-cty v1.12.2
+2024-10-16T13:30:53.060-0600 [INFO]  Go runtime version: go1.22.2
+2024-10-16T13:30:53.060-0600 [INFO]  CLI args: []string{"terraform", "fmt"}
+2024-10-16T13:30:53.060-0600 [DEBUG] Attempting to open CLI config file: /Users/jose.camacho/.terraformrc
+2024-10-16T13:30:53.060-0600 [DEBUG] File doesn't exist, but doesn't need to. Ignoring.
+2024-10-16T13:30:53.060-0600 [DEBUG] checking for credentials in "/Users/jose.camacho/.terraform.d/plugins"
+2024-10-16T13:30:53.061-0600 [DEBUG] ignoring non-existing provider search directory terraform.d/plugins
+2024-10-16T13:30:53.061-0600 [DEBUG] will search for provider plugins in /Users/jose.camacho/.terraform.d/plugins
+2024-10-16T13:30:53.061-0600 [DEBUG] ignoring non-existing provider search directory /Users/jose.camacho/Library/Application Support/io.terraform/plugins
+2024-10-16T13:30:53.061-0600 [DEBUG] ignoring non-existing provider search directory /Library/Application Support/io.terraform/plugins
+2024-10-16T13:30:53.062-0600 [INFO]  CLI command args: []string{"fmt"}

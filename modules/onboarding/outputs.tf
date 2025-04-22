@@ -17,3 +17,23 @@ output "organization_domain" {
   value       = var.organization_domain
   description = "Organization domain. e.g. sysdig.com"
 }
+
+output "include_folders" {
+  description = "folders to include for organization"
+  value       = var.include_folders
+}
+
+output "exclude_folders" {
+  description = "folders to exclude for organization"
+  value       = var.exclude_folders
+}
+
+output "include_projects" {
+  description = "projects to include for organization"
+  value       = var.include_projects
+}
+
+output "exclude_projects" {
+  description = "projects to exclude for organization"
+  value       = var.exclude_projects
+}

@@ -25,3 +25,27 @@ variable "sysdig_secure_account_id" {
   type        = string
   description = "ID of the Sysdig Cloud Account to enable Config Posture for (in case of organization, ID of the Sysdig management account)"
 }
+
+variable "include_folders" {
+  description = "(Optional) folders to include for organization"
+  type        = set(string)
+  default     = []
+}
+
+variable "exclude_folders" {
+  description = "(Optional) folders to exclude for organization"
+  type        = set(string)
+  default     = []
+}
+
+variable "include_projects" {
+  description = "(Optional) projects to include for organization"
+  type        = set(string)
+  default     = []
+}
+
+variable "exclude_projects" {
+  description = "(Optional) projects to exclude for organization"
+  type        = set(string)
+  default     = []
+}
