@@ -32,25 +32,25 @@ variable "suffix" {
 }
 
 variable "include_folders" {
-  description = "(Optional) folders to include for organization"
+  description = "(Optional) folders to include for organization in the format 'folders/{folder_id}' i.e: folders/123456789012"
   type        = set(string)
   default     = []
 }
 
 variable "exclude_folders" {
-  description = "(Optional) folders to exclude for organization"
+  description = "(Optional) folders to exclude for organization in the format 'folders/{folder_id}' i.e: folders/123456789012"
   type        = set(string)
   default     = []
 }
 
 variable "include_projects" {
-  description = "(Optional) projects to include for organization"
+  description = "(Optional) projects id to include for organization i.e: my-project-id"
   type        = set(string)
   default     = []
 }
 
 variable "exclude_projects" {
-  description = "(Optional) projects to exclude for organization"
+  description = "(Optional) projects id to exclude for organization i.e: my-project-id"
   type        = set(string)
   default     = []
 }
