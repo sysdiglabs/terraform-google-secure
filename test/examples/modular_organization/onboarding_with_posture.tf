@@ -22,6 +22,15 @@ module "onboarding" {
   project_id          = "org-child-project-3"
   is_organizational   = true
   organization_domain = "draios.com"
+
+  # legacy include/exclude org install params
+  # management_group_ids = ["folders/123456789012"]
+
+  # include/exclude parameters
+  include_folders = ["folders/123456789012"]
+  exclude_folders = []
+  include_projects = ["<project-id-1>", "<project-id-2>"]
+  exclude_projects = ["<project-id-3>", "<project-id-4>"]
 }
 
 module "config-posture" {
@@ -47,7 +56,7 @@ resource "sysdig_secure_cloud_auth_account_feature" "identity_entitlement_basic"
   components = [module.config-posture.service_principal_component_id]
   depends_on = [module.config-posture, sysdig_secure_cloud_auth_account_feature.config_posture]
   flags = {
-    "CIEM_FEATURE_MODE": "basic"
+    "CIEM_FEATURE_MODE" : "basic"
   }
 
   lifecycle {
