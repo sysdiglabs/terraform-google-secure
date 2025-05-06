@@ -17,7 +17,7 @@ variable "organization_domain" {
 
 variable "management_group_ids" {
   description = <<-EOF
-    TO BE DEPRECATED: Please work with Sysdig to migrate to using `include_folders` instead.
+    TO BE DEPRECATED on 30th November, 2025: Please work with Sysdig to migrate to using `include_folders` instead.
     When set, restrict onboarding to a set of folder identifiers whose child projects and projects are to be onboarded.
     Default: onboard all folders.
     EOF
