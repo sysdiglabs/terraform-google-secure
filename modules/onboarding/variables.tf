@@ -18,7 +18,7 @@ variable "organization_domain" {
 variable "management_group_ids" {
   description = <<-EOF
     TO BE DEPRECATED on 30th November, 2025: Please work with Sysdig to migrate to using `include_folders` instead.
-    When set, restrict onboarding to a set of folder identifiers whose child projects and projects are to be onboarded.
+    When set, restrict onboarding to a set of folder identifiers whose child projects and projects are to be onboarded. e.g. ["organizations/123456789012"], ["folders/123456789012"]
     Default: onboard all folders.
     EOF
   type        = set(string)
@@ -32,13 +32,13 @@ variable "suffix" {
 }
 
 variable "include_folders" {
-  description = "(Optional) folders to include for organization in the format 'folders/{folder_id}' i.e: folders/123456789012"
+  description = "(Optional) folders to include for organization in the format '[{folder_id_one}, {folder_id_two}]' i.e: '[\"123456789012\", \"123456789012\"]'"
   type        = set(string)
   default     = []
 }
 
 variable "exclude_folders" {
-  description = "(Optional) folders to exclude for organization in the format 'folders/{folder_id}' i.e: folders/123456789012"
+  description = "(Optional) folders to exclude for organization in the format '[{folder_id_one}, {folder_id_two}]' i.e: '[\"123456789012\", \"123456789012\"]'"
   type        = set(string)
   default     = []
 }

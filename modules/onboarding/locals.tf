@@ -7,6 +7,10 @@ locals {
     length(var.exclude_projects) > 0
   )
 
+  # add 'folders/' prefix to the include/exclude folders
+  prefixed_include_folders = [for folder_id in var.include_folders : "folders/${folder_id}"]
+  prefixed_exclude_folders = [for folder_id in var.exclude_folders : "folders/${folder_id}"]
+
   # check if old management_group_ids parameter is provided, for backwards compatibility we will always give preference to it
   check_old_management_group_ids_param = var.is_organizational && length(var.management_group_ids) > 0
 
