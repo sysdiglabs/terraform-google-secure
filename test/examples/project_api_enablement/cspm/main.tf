@@ -16,7 +16,7 @@ In addition, since CSPM is needed for onboard any GCP project these other APIs a
 
 # Set local variables for Project ID and API services to enable
 locals {
-  project = "org-child-project-1"
+  project = "<MANAGEMENT_PROJECT_ID>"
   services = [
     # CSPM specific APIs
     "sts.googleapis.com",
