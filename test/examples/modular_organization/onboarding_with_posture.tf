@@ -31,6 +31,9 @@ module "onboarding" {
   exclude_folders = []
   include_projects = ["<project-id-1>", "<project-id-2>"]
   exclude_projects = ["<project-id-3>", "<project-id-4>"]
+
+  # optionally pass automatic onboarding for orgs (defaults to false)
+  enable_automatic_onboarding = false
 }
 
 module "config-posture" {

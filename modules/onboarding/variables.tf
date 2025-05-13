@@ -54,3 +54,9 @@ variable "exclude_projects" {
   type        = set(string)
   default     = []
 }
+
+variable "enable_automatic_onboarding" {
+  type        = bool
+  default     = false
+  description = "true/false whether Sysdig should automatically discover latest set of accounts in onboarded organization or not"
+}
