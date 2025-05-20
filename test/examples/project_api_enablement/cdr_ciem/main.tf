@@ -3,6 +3,7 @@ This terraform file is intended to enable the GCP APIs needed for CDR/CIEM featu
 It will create a google_project_service resource per each service enabled within the GCP project.
 The APIs needed for the CDR/CIEM feature are listed below:
   - Cloud Pub/Sub API
+  - Cloud Logging API
 
 * Note: This do not overwrite any other APIs config that your GCP project has, it will only enabled it if isn't yet.
 */
@@ -11,7 +12,8 @@ The APIs needed for the CDR/CIEM feature are listed below:
 locals {
   project = "<MANAGEMENT_PROJECT_ID>"
   services = [
-    "pubsub.googleapis.com"
+    "pubsub.googleapis.com",
+    "logging.googleapis.com"
   ]
 }
 
