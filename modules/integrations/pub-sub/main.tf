@@ -218,6 +218,7 @@ resource "google_project_iam_custom_role" "custom_ingestion_auth_role" {
     "pubsub.subscriptions.list",
     "logging.sinks.get",
     "logging.sinks.list",
+    "monitoring.timeSeries.list",
   ]
 }
 
