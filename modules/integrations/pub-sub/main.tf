@@ -238,6 +238,13 @@ resource "google_service_account_iam_member" "custom_auth" {
   member             = "principalSet://iam.googleapis.com/projects/${data.google_project.project.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.ingestion_auth_pool.workload_identity_pool_id}/attribute.aws_role/arn:aws:sts::${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}:assumed-role/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_role_name}/${data.sysdig_secure_tenant_external_id.external_id.external_id}"
 }
 
+# add some timing for SA and permissions to be completely ready before calling Sysdig Backend, ensure that the validation will pass on first try
+resource "time_sleep" "wait_for_apply_google_permissions" {
+  depends_on = [sysdig_secure_cloud_auth_account_component.gcp_pubsub_datasource]
+
+  create_duration = "30s"
+}
+
 #-----------------------------------------------------------------------------------------------------------------------------------------
 # Call Sysdig Backend to add the pub-sub integration to the Sysdig Cloud Account
 #
