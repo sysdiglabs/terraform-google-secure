@@ -101,6 +101,7 @@ resource "google_logging_project_sink" "ingestion_sink" {
   count       = var.is_organizational ? 0 : 1
   name        = "${google_pubsub_topic.ingestion_topic.name}_sink"
   description = "Sysdig sink to direct the AuditLogs to the PubSub topic used for data gathering"
+  project     = var.project_id
 
   # NOTE: The target destination is a PubSub topic
   destination = "pubsub.googleapis.com/projects/${var.project_id}/topics/${google_pubsub_topic.ingestion_topic.name}"
