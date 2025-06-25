@@ -20,7 +20,6 @@ resource "random_id" "suffix" {
 
 locals {
   suffix = var.suffix == null ? random_id.suffix[0].hex : var.suffix
-  #   account_id = time_sleep.wait_for_apply_google_permissions[0].
 }
 
 resource "google_service_account" "onboarding_auth" {

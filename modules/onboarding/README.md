@@ -9,16 +9,14 @@ The Foundational Onboarding module serves the following functions:
 If instrumenting a project, the following resources will be created:
 
 - All the necessary `Service Accounts` and `Policies` to enable the Onboarding operation at the project level
-- A `Service Account key` and added role permissions to the `Service Account`, to allow Sysdig to authenticate to GCP on
-  your behalf to validate resources.
+- A `Workload Identity Pool`, `Provider` and added custom role permissions to the `Service Account`, to allow Sysdig to authenticate to GCP on your behalf to validate resources.
 - A cloud account in the Sysdig Backend, associated with the GCP project and with the required component to serve the
   foundational functions.
 
-If instrumenting an Organziation, the following resources will be created:
+If instrumenting an Organization, the following resources will be created:
 
 - All the necessary `Service Accounts` and `Policies` to enable the Onboarding operation at the organization level
-- A `Service Account key` and added role permissions to the `Service Account`, to allow Sysdig to authenticate to GCP on
-  your behalf to validate resources.
+- A `Workload Identity Pool`, `Provider` and added custom role permissions to the `Service Account`, to allow Sysdig to authenticate to GCP on your behalf to validate resources.
 - A cloud account in the Sysdig Backend, associated with the management project and with the required component to serve
   the foundational functions.
 - A cloud organization in the Sysdig Backend, associated with the GCP Organization to fetch the organization structure
@@ -27,7 +25,7 @@ If instrumenting an Organziation, the following resources will be created:
 Note:
 
 - The outputs from the foundational module, such as `sysdig_secure_account_id` are needed as inputs to the other
-  features/integrations modules for subsequent modular installs.
+  features/integrations modules for subsequent modular installations.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
@@ -45,6 +43,8 @@ Note:
 |------------------------------------------------------------|---------|
 | <a name="provider_google"></a> [google](#provider\_google) | 5.0.0   |
 | <a name="provider_random"></a> [random](#provider\_random) | >= 3.1  |
+| <a name="provider_time"></a> [time](#provider\_time)       | 0.13.1  |
+
 
 ## Modules
 
@@ -56,15 +56,18 @@ No modules.
 resource |
 | [google_organization.org](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/organization) |
 data source |
+| [sysdig_secure_trusted_cloud_identity.trusted_identity](https://registry.terraform.io/providers/sysdiglabs/sysdig/latest/docs/data-sources/secure_trusted_cloud_identity) | data source |
+| [sysdig_secure_tenant_external_id](https://registry.terraform.io/providers/sysdiglabs/sysdig/latest/docs/data-sources/secure_tenant_external_id) | data source |
 | [google_project.project](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/project) |
 data source |
 | [random_id.suffix](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) | resource |
+| [google_iam_workload_identity_pool.onboarding_auth_pool](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/iam_workload_identity_pool) | resource |
+| [google_iam_workload_identity_pool_provider.onboarding_auth_pool_provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/iam_workload_identity_pool_provider) | resource |
 | [google_project_iam_member.browser](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_iam#google_project_iam_member) |
 resource |
 | [google_organization_iam_member.browser](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_organization_iam#google_organization_iam_member) |
 resource |
-| [google_service_account_key.onboarding_service_account_key](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_key) |
-resource |
+| [google_service_account_iam_member.custom_onboarding_auth](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_service_account_iam#google_service_account_iam_member) | resource |
 | [sysdig_secure_cloud_auth_account.google_account](https://registry.terraform.io/providers/sysdiglabs/sysdig/latest/docs/resources/secure_cloud_auth_account) |
 resource |
 | [sysdig_secure_organization.google_organization](https://registry.terraform.io/providers/sysdiglabs/sysdig/latest/docs/resources/secure_organization) |
