@@ -114,7 +114,7 @@ resource "sysdig_secure_cloud_auth_account" "google_account" {
 }
 
 #--------------------------------------------------------------------------------------------------------------
-# Call Sysdig Backend to add the service-principal integration for Config Posture to the Sysdig Cloud Account
+# Call Sysdig Backend to add the service-principal integration for Onboarding to the Sysdig Cloud Account
 #--------------------------------------------------------------------------------------------------------------
 resource "sysdig_secure_cloud_auth_account_component" "onboarding_service_principal" {
   account_id = sysdig_secure_cloud_auth_account.google_account.id
