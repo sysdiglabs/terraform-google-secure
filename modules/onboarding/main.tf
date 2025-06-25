@@ -96,23 +96,6 @@ resource "sysdig_secure_cloud_auth_account" "google_account" {
   provider_type      = "PROVIDER_GCP"
   provider_alias     = data.google_project.project.name
   provider_tenant_id = var.organization_domain
-
-#   component {
-#     type     = "COMPONENT_SERVICE_PRINCIPAL"
-#     instance = "secure-onboarding"
-#     version  = "v0.1.0"
-#     service_principal_metadata = jsonencode({
-#       gcp = {
-#         workload_identity_federation = {
-#           pool_id          = google_iam_workload_identity_pool.onboarding_auth_pool.workload_identity_pool_id
-#           pool_provider_id = google_iam_workload_identity_pool_provider.onboarding_auth_pool_provider.workload_identity_pool_provider_id
-#           project_number   = data.google_project.project.number
-#         }
-#         email = google_service_account.onboarding_auth.email
-#       }
-#     })
-#   }
-
   depends_on = [
     google_service_account.onboarding_auth,
     google_iam_workload_identity_pool.onboarding_auth_pool,
