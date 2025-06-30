@@ -39,7 +39,8 @@ resource "sysdig_secure_organization" "google_organization" {
   automatic_onboarding           = var.enable_automatic_onboarding
   depends_on = [
     google_organization_iam_member.browser,
-    sysdig_secure_cloud_auth_account.google_account
+    sysdig_secure_cloud_auth_account.google_account,
+    sysdig_secure_cloud_auth_account_component.onboarding_service_principal,
   ]
   lifecycle {
     ignore_changes = [automatic_onboarding]
