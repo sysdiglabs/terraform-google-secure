@@ -88,7 +88,28 @@ variable "exclude_logs_filter" {
     filter      = string,
     disabled    = optional(bool)
   }))
-  default = []
+  default = [
+    {
+      name        = "system_principals"
+      description = "Exclude system principals"
+      filter      = "protoPayload.authenticationInfo.principalEmail=~\"^system\\:.*\" AND (protoPayload.authenticationInfo.principalEmail!~\"^system\\:(anonymous|serviceaccount)*\" OR protoPayload.authenticationInfo.principalEmail=~\"^system\\:serviceaccount\\:kube-system\")"
+    },
+    {
+      name        = "k8s_audit"
+      description = "Exclude logs from the clusters control planes"
+      filter      = "protoPayload.methodName=~\"^(io\\.k8s|io\\.traefik|us\\.containo|io\\.x-k8s|io\\.gke|org\\.projectcalico|io\\.openshift|io\\.istio)\" AND protoPayload.methodName!~\"secret\""
+    },
+    {
+      name        = "ciulium_control_plane"
+      description = "Exclude operations on Cilium"
+      filter      = "protoPayload.methodName=~\"^io\\.cilium\" AND protoPayload.methodName!~\"identitites\""
+    },
+    {
+      name        = "monitoring_queries"
+      description = "Exclude monitoring queries"
+      filter      = "protoPayload.methodName=~\"^com\\.coreos\""
+    }
+  ]
 }
 
 variable "ingestion_sink_filter" {
