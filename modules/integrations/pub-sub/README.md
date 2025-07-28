@@ -5,6 +5,8 @@ Before applying the changes defined in this module, the following operations nee
 
 - The APIs needed for the CDR/CIEM feature are listed below:
     - Cloud Pub/Sub API
+    - Cloud Logging API
+    - Cloud Monitoring API
 
 - The following resources will be created in each instrumented project:
     - A `PubSub Topic` to send the AuditLogs from the project
