@@ -4,9 +4,9 @@ This module will deploy a Service Principal (GCP Service Account) for a single G
 
 The following resources will be created in each instrumented project:
 - A Service Account with associated role permissions to grant Sysdig read only permissions to secure your GCP Project.
-    - A Service Account Key attached to this service account using its name. 
+    - A Service Account Key attached to this service account using its name.
 
-If instrumenting a GCP Organization, the service account will be created in the Management Account (provided via the project ID), with appropriate organizational level permissions. 
+If instrumenting a GCP Organization, the service account will be created in the Management Account (provided via the project ID), with appropriate organizational level permissions.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements

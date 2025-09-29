@@ -18,8 +18,8 @@ provider "google" {
 }
 
 module "onboarding" {
-  source      = "../../../modules/onboarding"
-  project_id  = "org-child-project-3"
+  source     = "../../../modules/onboarding"
+  project_id = "org-child-project-3"
 }
 
 module "config-posture" {
@@ -43,7 +43,7 @@ resource "sysdig_secure_cloud_auth_account_feature" "identity_entitlement_basic"
   components = [module.config-posture.service_principal_component_id]
   depends_on = [module.config-posture, sysdig_secure_cloud_auth_account_feature.config_posture]
   flags = {
-    "CIEM_FEATURE_MODE": "basic"
+    "CIEM_FEATURE_MODE" : "basic"
   }
 
   lifecycle {

@@ -68,4 +68,3 @@ resource "sysdig_secure_organization" "gcp_organization_mytestproject" {
   management_account_id = sysdig_secure_cloud_auth_account.gcp_project_mytestproject.id
   depends_on            = [module.organization-posture]
 }
-
