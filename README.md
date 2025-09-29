@@ -96,5 +96,3 @@ Module is maintained and supported by [Sysdig](https://sysdig.com).
 ## License
 
 Apache 2 Licensed. See LICENSE for full details.
-
-
