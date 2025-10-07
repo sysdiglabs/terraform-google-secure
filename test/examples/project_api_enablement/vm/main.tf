@@ -17,16 +17,16 @@ locals {
 
 # GCP provider
 provider "google" {
-  project     = local.project
-  region      = "us-west-1"
+  project = local.project
+  region  = "us-west-1"
 }
 
 // Enable API services for GCP project
 resource "google_project_service" "enable_vm_apis" {
-  project  = local.project
+  project = local.project
 
-  for_each = toset(local.services)
-  service = each.value
+  for_each           = toset(local.services)
+  service            = each.value
   disable_on_destroy = false
 }
 
