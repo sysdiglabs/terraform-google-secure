@@ -4,10 +4,10 @@ on:
   workflow_call:
   push:
     branches:
-      - main
+      - master
 
 concurrency:
-  group: main-${{ github.ref }}
+  group: master-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
