@@ -6,4 +6,3 @@ locals {
   # fetch the GCP root org
   root_org = var.is_organizational ? [data.google_organization.org[0].name] : []
 }
-
