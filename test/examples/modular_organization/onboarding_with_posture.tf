@@ -23,12 +23,9 @@ module "onboarding" {
   is_organizational   = true
   organization_domain = "draios.com"
 
-  # legacy include/exclude org install params
-  # management_group_ids = ["folders/123456789012"]
-
   # include/exclude parameters
-  include_folders = ["123456789012", "12345678911"]
-  exclude_folders = []
+  include_folders  = ["123456789012", "12345678911"]
+  exclude_folders  = []
   include_projects = ["<project-id-1>", "<project-id-2>"]
   exclude_projects = ["<project-id-3>", "<project-id-4>"]
 

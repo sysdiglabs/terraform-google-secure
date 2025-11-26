@@ -4,10 +4,10 @@ provider "google" {
 }
 
 module "single-project-threat-detection" {
-  source        = "../../../..//modules/services/webhook-datasource"
-  project_id    = "mytestproject"
-  push_endpoint = "test_sysdig_secure_cloudingestion_endpoint"
-  external_id   = "external_id"
+  source                = "../../../..//modules/services/webhook-datasource"
+  project_id            = "mytestproject"
+  push_endpoint         = "test_sysdig_secure_cloudingestion_endpoint"
+  external_id           = "external_id"
   ingestion_sink_filter = "protoPayload.@type = \"type.googleapis.com/google.cloud.audit.AuditLog\" (protoPayload.methodName!~ \"\\.(get|list)$\" OR protoPayload.serviceName != (\"k8s.io\" and \"storage.googleapis.com\"))"
   audit_log_config = [
     {

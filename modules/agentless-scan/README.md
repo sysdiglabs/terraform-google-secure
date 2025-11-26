@@ -1,6 +1,6 @@
 # GCP Agentless Scanning Module
 
-This Module creates the resources required to scan hosts on Google Cloud Projects. Before applying the changes defined 
+This Module creates the resources required to scan hosts on Google Cloud Projects. Before applying the changes defined
 in this module, the following operations need to be performed on the target GCP environment:
 
 - The APIs needed for the VM feature are listed below:

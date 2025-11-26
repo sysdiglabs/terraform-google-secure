@@ -4,12 +4,12 @@ provider "google" {
 }
 
 module "organization-threat-detection" {
-  source              = "../../../..//modules/services/webhook-datasource"
-  project_id          = "mytestproject"
-  push_endpoint       = "test_sysdig_secure_cloudingestion_endpoint"
-  is_organizational   = true
-  organization_domain = "mytestorg.com"
-  external_id         = "external_id"
+  source                = "../../../..//modules/services/webhook-datasource"
+  project_id            = "mytestproject"
+  push_endpoint         = "test_sysdig_secure_cloudingestion_endpoint"
+  is_organizational     = true
+  organization_domain   = "mytestorg.com"
+  external_id           = "external_id"
   ingestion_sink_filter = "protoPayload.@type = \"type.googleapis.com/google.cloud.audit.AuditLog\" (protoPayload.methodName!~ \"\\.(get|list)$\" OR protoPayload.serviceName != (\"k8s.io\" and \"storage.googleapis.com\"))"
   audit_log_config = [
     {
@@ -124,4 +124,3 @@ resource "sysdig_secure_organization" "gcp_organization_mytestproject" {
   management_account_id = sysdig_secure_cloud_auth_account.gcp_project_mytestproject.id
   depends_on            = [module.organization-posture]
 }
-

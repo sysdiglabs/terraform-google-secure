@@ -1,5 +1,5 @@
 module "vm_workload_scanning" {
-  source            	  = "../../../modules/vm-workload-scanning"
+  source = "../../../modules/vm-workload-scanning"
 
   project_id               = module.onboarding.project_id
   sysdig_secure_account_id = module.onboarding.sysdig_secure_account_id
