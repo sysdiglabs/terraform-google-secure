@@ -71,7 +71,7 @@ There are four new parameters to configure organizational deployments on the clo
 3. `include_projects` - List of GCP Projects to deploy the Sysdig Secure for Cloud resources in.
 4. `exclude_projects` - List of GCP Projects to exclude deploying the Sysdig Secure for Cloud resources in.
 
-**WARNING**: module variable `management_group_ids` will be DEPRECATED on 30th November, 2025. Please work with Sysdig to migrate your Terraform installs to use `include_folders` instead to achieve the same deployment outcome.
+**DEPRECATION NOTICE**: module variable `management_group_ids` has been DEPRECATED and is no longer supported. Please work with Sysdig to migrate your Terraform installs to use `include_folders` instead to achieve the same deployment outcome.
 
 **Note**: The modules under `modules/services/` folder are legacy installs and soon to be deprecated. Those modules are no longer used for Onboarding. Please use the corresponding feature modules as mentioned in `## Modules` section above for Modular Onboarding. It is the recommended form of Onboarding.
 
