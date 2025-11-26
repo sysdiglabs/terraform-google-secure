@@ -18,8 +18,6 @@ locals {
     # disks
     "compute.disks.list",
     "compute.disks.get",
-    # workload identity federation
-    "iam.serviceAccounts.getAccessToken",
   ]
   host_scan_permissions = [
     # general stuff
