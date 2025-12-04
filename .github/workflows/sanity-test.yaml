@@ -12,9 +12,10 @@ concurrency:
 
 jobs:
   sanity-tests:
-    if: (github.event_name == 'pull_request' && github.event.action == 'ready_for_review') ||
+    if: |
+      (github.event_name == 'pull_request' && github.event.action == 'ready_for_review') ||
       (github.event_name == 'pull_request_review' && github.event.review.state == 'approved') ||
-      (github.event_name == 'push' && github.ref == 'refs/heads/main')
+      (github.event_name == 'push' && github.ref == 'refs/heads/master')
     runs-on: tools-runner
 
     steps:
