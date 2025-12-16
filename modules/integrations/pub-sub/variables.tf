@@ -122,3 +122,9 @@ variable "sysdig_secure_account_id" {
   type        = string
   description = "ID of the Sysdig Cloud Account to enable to enable Pub Sub integration for (incase of organization, ID of the Sysdig management account)"
 }
+
+variable "wait_after_basic_seconds" {
+  type        = number
+  description = "Number of seconds to wait after CIEM basic before proceeding (set to 0 to disable)."
+  default     = 30
+}
