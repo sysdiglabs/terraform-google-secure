@@ -29,7 +29,7 @@ Set `is_organizatinal=true` together with the `organization_domain=<domain>`.
 |---------------------------------------------------------------------------|-----------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0    |
 | <a name="requirement_google"></a> [google](#requirement\_google)          | >= 4.21.0 |
-| <a name="requirement_sysdig"></a> [sysdig](#requirement\_sysdig)          | >= 1.34.0 |
+| <a name="requirement_sysdig"></a> [sysdig](#requirement\_sysdig)          | ~> 3.3    |
 | <a name="requirement_random"></a> [random](#requirement\_random)          | >= 3.1    |
 
 ## Providers
@@ -38,7 +38,7 @@ Set `is_organizatinal=true` together with the `organization_domain=<domain>`.
 |---------------------------------------------------------------------------|-----------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0    |
 | <a name="requirement_google"></a> [google](#requirement\_google)          | >= 4.21.0 |
-| <a name="requirement_sysdig"></a> [sysdig](#requirement\_sysdig)          | >= 1.34.0 |
+| <a name="requirement_sysdig"></a> [sysdig](#requirement\_sysdig)          | ~> 3.3    |
 | <a name="requirement_random"></a> [random](#requirement\_random)          | >= 3.1    |
 
 ## Modules

@@ -14,14 +14,14 @@ The following resources will be created in each instrumented project:
 |------|---------|
 | terraform | ~> 1.7 |
 | google | >= 4.50.0 |
-| sysdig | ~> 1.37 |
+| sysdig | ~> 3.3    |
 
 ### Providers
 
 | Name | Version |
 |------|---------|
 | google | >= 4.50.0 |
-| sysdig | ~> 1.37 |
+| sysdig | ~> 3.3    |
 
 ### Modules
 
