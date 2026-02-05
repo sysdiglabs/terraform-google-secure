@@ -7,7 +7,11 @@ module "pub-sub" {
   source                   = "../../../modules/integrations/pub-sub"
   project_id               = module.onboarding.project_id
   sysdig_secure_account_id = module.onboarding.sysdig_secure_account_id
-  ingestion_sink_filter    = ""
+
+  install_gcp_api        = true
+  disable_api_on_destroy = false
+
+  ingestion_sink_filter = ""
   audit_log_config = [
     {
       service    = "allServices"

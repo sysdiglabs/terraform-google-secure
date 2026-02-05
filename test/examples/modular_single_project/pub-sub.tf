@@ -7,7 +7,11 @@ module "pub-sub" {
   source                   = "../../../modules/integrations/pub-sub"
   project_id               = module.onboarding.project_id
   sysdig_secure_account_id = module.onboarding.sysdig_secure_account_id
-  ingestion_sink_filter    = "protoPayload.@type = \"type.googleapis.com/google.cloud.audit.AuditLog\" (protoPayload.methodName!~ \"\\.(get|list)$\" OR protoPayload.serviceName != (\"k8s.io\" and \"storage.googleapis.com\"))"
+
+  install_gcp_api        = true
+  disable_api_on_destroy = false
+
+  ingestion_sink_filter = "protoPayload.@type = \"type.googleapis.com/google.cloud.audit.AuditLog\" (protoPayload.methodName!~ \"\\.(get|list)$\" OR protoPayload.serviceName != (\"k8s.io\" and \"storage.googleapis.com\"))"
   audit_log_config = [
     {
       service = "cloudsql.googleapis.com"
