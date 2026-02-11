@@ -20,12 +20,17 @@ provider "google" {
 module "onboarding" {
   source     = "../../../modules/onboarding"
   project_id = "org-child-project-3"
+
+  install_gcp_api        = true
+  disable_api_on_destroy = false
 }
 
 module "config-posture" {
   source                   = "../../../modules/config-posture"
   project_id               = module.onboarding.project_id
   sysdig_secure_account_id = module.onboarding.sysdig_secure_account_id
+
+  depends_on = [module.onboarding]
 }
 
 resource "sysdig_secure_cloud_auth_account_feature" "config_posture" {

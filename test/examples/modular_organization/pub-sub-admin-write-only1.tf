@@ -9,7 +9,11 @@ module "pub-sub" {
   is_organizational        = module.onboarding.is_organizational
   organization_domain      = module.onboarding.organization_domain
   sysdig_secure_account_id = module.onboarding.sysdig_secure_account_id
-  ingestion_sink_filter    = ""
+
+  install_gcp_api        = true
+  disable_api_on_destroy = false
+
+  ingestion_sink_filter = ""
   audit_log_config = [
     {
       service    = "allServices"

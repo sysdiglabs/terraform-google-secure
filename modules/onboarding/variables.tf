@@ -3,6 +3,18 @@ variable "project_id" {
   description = "(Required) Target Project identifier provided by the customer"
 }
 
+variable "install_gcp_api" {
+  type        = bool
+  description = "When true, enables the required GCP APIs in the target project."
+  default     = true
+}
+
+variable "disable_api_on_destroy" {
+  type        = bool
+  description = "Controls google_project_service.disable_on_destroy for APIs enabled by this module. Use false to avoid disabling APIs during terraform destroy."
+  default     = false
+}
+
 variable "is_organizational" {
   description = "(Optional) Set this field to 'true' to deploy secure-for-cloud to a GCP Organization."
   type        = bool
