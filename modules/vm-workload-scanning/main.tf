@@ -5,14 +5,14 @@ data "sysdig_secure_agentless_scanning_assets" "assets" {}
 
 locals {
   suffix = random_id.suffix.hex
+
+  # Full Workload Identity Provider resource name; this is the canonical value Google STS expects as audience
+  # (and matches what the host scanning module sends via provider.name).
+  wif_provider_name = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? google_iam_workload_identity_pool_provider.agentless[0].name : google_iam_workload_identity_pool_provider.agentless_gcp[0].name
 }
 
 resource "random_id" "suffix" {
   byte_length = 3
-}
-
-data "google_project" "project" {
-  project_id = var.project_id
 }
 
 data "sysdig_secure_trusted_cloud_identity" "trusted_identity" {
@@ -39,9 +39,6 @@ resource "google_project_iam_custom_role" "controller" {
     "storage.objects.get",
     "storage.buckets.list",
     "storage.objects.list",
-
-    # workload identity federation
-    "iam.serviceAccounts.getAccessToken",
   ]
 }
 
@@ -52,6 +49,38 @@ resource "google_project_iam_binding" "controller_binding" {
   members = [
     "serviceAccount:${google_service_account.controller.email}",
   ]
+}
+
+resource "google_service_account_iam_member" "controller_wif_user" {
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? 1 : 0
+
+  service_account_id = google_service_account.controller.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.aws_account/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}"
+}
+
+resource "google_service_account_iam_member" "controller_wif_token_creator" {
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? 1 : 0
+
+  service_account_id = google_service_account.controller.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.aws_account/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}"
+}
+
+resource "google_service_account_iam_member" "controller_wif_user_gcp" {
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? 1 : 0
+
+  service_account_id = google_service_account.controller.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.sa_id/${data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id}"
+}
+
+resource "google_service_account_iam_member" "controller_wif_token_creator_gcp" {
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? 1 : 0
+
+  service_account_id = google_service_account.controller.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.sa_id/${data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id}"
 }
 
 resource "google_iam_workload_identity_pool" "agentless" {
@@ -82,14 +111,6 @@ resource "google_iam_workload_identity_pool_provider" "agentless" {
   }
 }
 
-resource "google_service_account_iam_member" "controller_binding" {
-  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? 1 : 0
-
-  service_account_id = google_service_account.controller.name
-  role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.aws_account/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}"
-}
-
 resource "google_iam_workload_identity_pool_provider" "agentless_gcp" {
   count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? 1 : 0
 
@@ -111,14 +132,6 @@ resource "google_iam_workload_identity_pool_provider" "agentless_gcp" {
   }
 }
 
-resource "google_service_account_iam_member" "controller_binding_gcp" {
-  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? 1 : 0
-
-  service_account_id = google_service_account.controller.name
-  role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.sa_id/${data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id}"
-}
-
 #--------------------------------------------------------------------------------------------------------------
 # Call Sysdig Backend to add the service-principal integration for VM Workload Scanning to the Sysdig Cloud Account
 #--------------------------------------------------------------------------------------------------------------
@@ -130,9 +143,7 @@ resource "sysdig_secure_cloud_auth_account_component" "google_service_principal"
   service_principal_metadata = jsonencode({
     gcp = {
       workload_identity_federation = {
-        pool_id          = google_iam_workload_identity_pool.agentless.workload_identity_pool_id
-        pool_provider_id = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? google_iam_workload_identity_pool_provider.agentless[0].workload_identity_pool_provider_id : google_iam_workload_identity_pool_provider.agentless_gcp[0].workload_identity_pool_provider_id
-        project_number   = data.google_project.project.number
+        pool_provider_id = local.wif_provider_name
       }
       email = google_service_account.controller.email
     }
@@ -144,8 +155,10 @@ resource "sysdig_secure_cloud_auth_account_component" "google_service_principal"
     google_iam_workload_identity_pool.agentless,
     google_iam_workload_identity_pool_provider.agentless,
     google_iam_workload_identity_pool_provider.agentless_gcp,
-    google_service_account_iam_member.controller_binding,
-    google_service_account_iam_member.controller_binding_gcp,
+    google_service_account_iam_member.controller_wif_user,
+    google_service_account_iam_member.controller_wif_token_creator,
+    google_service_account_iam_member.controller_wif_user_gcp,
+    google_service_account_iam_member.controller_wif_token_creator_gcp,
     google_organization_iam_member.controller,
   ]
 }

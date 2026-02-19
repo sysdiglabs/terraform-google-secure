@@ -29,7 +29,6 @@ resource "google_organization_iam_custom_role" "custom_role" {
     "storage.objects.get",
     "storage.buckets.list",
     "storage.objects.list",
-    "iam.serviceAccounts.getAccessToken"
   ]
 }
 
