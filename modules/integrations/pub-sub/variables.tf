@@ -140,3 +140,9 @@ variable "wait_after_basic_seconds" {
   description = "Number of seconds to wait after CIEM basic before proceeding (set to 0 to disable)."
   default     = 30
 }
+
+variable "wait_for_component_seconds" {
+  type        = number
+  description = "(Optional) Delay in seconds to wait after component operations (create/destroy) to ensure Sysdig backend has fully processed changes before proceeding. Set to 0 to disable."
+  default     = 30
+}
