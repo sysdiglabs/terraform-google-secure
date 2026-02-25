@@ -54,7 +54,7 @@ resource "sysdig_secure_cloud_auth_account_feature" "threat_detection" {
   type       = "FEATURE_SECURE_THREAT_DETECTION"
   enabled    = true
   components = [module.pub-sub.pubsub_datasource_component_id]
-  depends_on = [module.pub-sub]
+  depends_on = [module.pub-sub, module.pub-sub.component_ready]
 }
 
 resource "sysdig_secure_cloud_auth_account_feature" "identity_entitlement_advanced" {
@@ -62,7 +62,7 @@ resource "sysdig_secure_cloud_auth_account_feature" "identity_entitlement_advanc
   type       = "FEATURE_SECURE_IDENTITY_ENTITLEMENT"
   enabled    = true
   components = concat(tolist(sysdig_secure_cloud_auth_account_feature.identity_entitlement_basic.components), [module.pub-sub.pubsub_datasource_component_id])
-  depends_on = [module.pub-sub, sysdig_secure_cloud_auth_account_feature.identity_entitlement_basic, module.pub-sub.post_ciem_basic_delay]
+  depends_on = [module.pub-sub, module.pub-sub.component_ready, sysdig_secure_cloud_auth_account_feature.identity_entitlement_basic, module.pub-sub.post_ciem_basic_delay]
   flags      = { "CIEM_FEATURE_MODE" : "advanced" }
 
   lifecycle {

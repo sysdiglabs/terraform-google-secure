@@ -48,7 +48,7 @@ resource "sysdig_secure_cloud_auth_account_feature" "config_posture" {
   type       = "FEATURE_SECURE_CONFIG_POSTURE"
   enabled    = true
   components = [module.config-posture.service_principal_component_id]
-  depends_on = [module.config-posture]
+  depends_on = [module.config-posture, module.config-posture.component_ready]
 }
 
 resource "sysdig_secure_cloud_auth_account_feature" "identity_entitlement_basic" {
@@ -56,7 +56,7 @@ resource "sysdig_secure_cloud_auth_account_feature" "identity_entitlement_basic"
   type       = "FEATURE_SECURE_IDENTITY_ENTITLEMENT"
   enabled    = true
   components = [module.config-posture.service_principal_component_id]
-  depends_on = [module.config-posture, sysdig_secure_cloud_auth_account_feature.config_posture]
+  depends_on = [module.config-posture, module.config-posture.component_ready, sysdig_secure_cloud_auth_account_feature.config_posture]
   flags = {
     "CIEM_FEATURE_MODE" : "basic"
   }

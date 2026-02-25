@@ -149,3 +149,11 @@ resource "sysdig_secure_cloud_auth_account_component" "google_service_principal"
     google_organization_iam_member.controller,
   ]
 }
+
+# Delay after component creation and before component destruction
+# This ensures Sysdig backend has fully processed component operations before features interact with it
+resource "time_sleep" "wait_for_component_readiness" {
+  create_duration  = format("%ds", var.wait_for_component_seconds)
+  destroy_duration = format("%ds", var.wait_for_component_seconds)
+  depends_on       = [sysdig_secure_cloud_auth_account_component.google_service_principal]
+}
