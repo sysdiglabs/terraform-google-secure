@@ -246,6 +246,43 @@ resource "time_sleep" "wait_for_apply_google_permissions" {
   create_duration = "30s"
 }
 
+resource "google_cloud_asset_project_feed" "asset_feed" {
+  count = var.enable_real_time_inventory ? 1 : 0
+
+  project      = var.project_id
+  feed_id      = "sysdig-asset-feed-${local.suffix}"
+  content_type = "RESOURCE"
+  asset_types  = [""] # TODO: add asset_types
+  asset_names  = [""] # TODO: add asset_names
+  feed_output_config {
+    pubsub_destination {
+      topic = google_pubsub_topic.ingestion_topic.id
+    }
+  }
+  depends_on = [
+    google_project_service.pub_sub_apis,
+    google_pubsub_topic.ingestion_topic
+  ]
+}
+
+resource "google_project_service_identity" "cloud_asset_sa" {
+  count = var.enable_real_time_inventory ? 1 : 0
+
+  provider   = google-beta
+  project    = var.project_id
+  service    = "cloudasset.googleapis.com"
+  depends_on = [google_project_service.pub_sub_apis]
+}
+
+resource "google_pubsub_topic_iam_member" "cloud_asset_publisher" {
+  count = var.enable_real_time_inventory ? 1 : 0
+
+  project = google_pubsub_topic.ingestion_topic.project
+  topic   = google_pubsub_topic.ingestion_topic.name
+  role    = "roles/pubsub.publisher"
+  member  = "serviceAccount:${google_project_service_identity.cloud_asset_sa[0].email}"
+}
+
 #-----------------------------------------------------------------------------------------------------------------------------------------
 # Call Sysdig Backend to add the pub-sub integration to the Sysdig Cloud Account
 #

@@ -140,3 +140,9 @@ variable "wait_after_basic_seconds" {
   description = "Number of seconds to wait after CIEM basic before proceeding (set to 0 to disable)."
   default     = 30
 }
+
+variable "enable_real_time_inventory" {
+  type        = bool
+  description = "When true, enables the required resources for real time inventory to work."
+  default     = false
+}
