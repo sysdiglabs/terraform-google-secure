@@ -6,6 +6,7 @@ locals {
     "pubsub.googleapis.com",
     "logging.googleapis.com",
     "monitoring.googleapis.com",
+    "cloudasset.googleapis.com", # required for google_project_service_identity.cloud_asset_sa (RTI asset feeds)
   ])
 }
 

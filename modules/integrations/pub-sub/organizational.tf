@@ -85,3 +85,24 @@ resource "google_organization_iam_member" "custom" {
   role   = google_organization_iam_custom_role.custom_ingestion_auth_role[0].id
   member = "serviceAccount:${google_service_account.push_auth.email}"
 }
+
+resource "google_cloud_asset_organization_feed" "asset_feed" {
+  count = var.is_organizational && var.enable_real_time_inventory ? 1 : 0
+
+  billing_project = var.project_id
+  feed_id         = "sysdig-organization-asset-feed-${local.suffix}"
+  org_id          = data.google_organization.org[0].org_id
+  content_type    = "RESOURCE"
+  # ".*" is an RE2 regex matching all asset types. The Cloud Asset feed API requires
+  # at least one of asset_types/asset_names to be set, so an empty list is invalid.
+  asset_types = [".*"]
+  feed_output_config {
+    pubsub_destination {
+      topic = google_pubsub_topic.ingestion_topic.id
+    }
+  }
+  depends_on = [
+    google_pubsub_topic.ingestion_topic,
+    google_pubsub_topic_iam_member.cloud_asset_publisher,
+  ]
+}
