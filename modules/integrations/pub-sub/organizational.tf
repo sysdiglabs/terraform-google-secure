@@ -90,10 +90,10 @@ resource "google_cloud_asset_organization_feed" "asset_feed" {
   count = var.is_organizational && var.enable_real_time_inventory ? 1 : 0
 
   billing_project = var.project_id
-  feed_id      = "sysdig-organization-asset-feed-${local.suffix}"
-  org_id      = data.google_organization.org[0].org_id
-  content_type = "RESOURCE"
-  asset_types = [] // TODO: add asset_types
+  feed_id         = "sysdig-organization-asset-feed-${local.suffix}"
+  org_id          = data.google_organization.org[0].org_id
+  content_type    = "RESOURCE"
+  asset_types     = [] // TODO: add asset_types
   feed_output_config {
     pubsub_destination {
       topic = google_pubsub_topic.ingestion_topic.id
