@@ -3,6 +3,10 @@
 #-----------------------------------------------------------------------------------------
 data "sysdig_secure_agentless_scanning_assets" "assets" {}
 
+data "google_project" "project" {
+  project_id = var.project_id
+}
+
 #-----------------------------------------------------------------------------------------
 # These locals indicate the suffix to create unique name for resources and permissions
 #-----------------------------------------------------------------------------------------
@@ -198,7 +202,9 @@ resource "sysdig_secure_cloud_auth_account_component" "gcp_agentless_scan" {
   service_principal_metadata = jsonencode({
     gcp = {
       workload_identity_federation = {
-        pool_provider_id = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? google_iam_workload_identity_pool_provider.agentless[0].name : data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? google_iam_workload_identity_pool_provider.agentless_gcp[0].name : null
+        project_number   = data.google_project.project.number
+        pool_id          = google_iam_workload_identity_pool.agentless.workload_identity_pool_id
+        pool_provider_id = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? google_iam_workload_identity_pool_provider.agentless[0].workload_identity_pool_provider_id : data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? google_iam_workload_identity_pool_provider.agentless_gcp[0].workload_identity_pool_provider_id : null
       }
       email = google_service_account.controller.email
     }
