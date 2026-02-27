@@ -93,14 +93,13 @@ resource "google_cloud_asset_organization_feed" "asset_feed" {
   feed_id         = "sysdig-organization-asset-feed-${local.suffix}"
   org_id          = data.google_organization.org[0].org_id
   content_type    = "RESOURCE"
-  asset_types     = [] // TODO: add asset_types
+  asset_types     = [".*"]
   feed_output_config {
     pubsub_destination {
       topic = google_pubsub_topic.ingestion_topic.id
     }
   }
   depends_on = [
-    google_project_service.pub_sub_apis,
     google_pubsub_topic.ingestion_topic
   ]
 }

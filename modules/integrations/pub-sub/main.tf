@@ -252,15 +252,13 @@ resource "google_cloud_asset_project_feed" "asset_feed" {
   project      = var.project_id
   feed_id      = "sysdig-asset-feed-${local.suffix}"
   content_type = "RESOURCE"
-  asset_types  = [""] # TODO: add asset_types
-  asset_names  = [""] # TODO: add asset_names
+  asset_types  = [".*"]
   feed_output_config {
     pubsub_destination {
       topic = google_pubsub_topic.ingestion_topic.id
     }
   }
   depends_on = [
-    google_project_service.pub_sub_apis,
     google_pubsub_topic.ingestion_topic
   ]
 }

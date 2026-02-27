@@ -15,6 +15,9 @@ provider "sysdig" {
 provider "google" {
   project = "org-child-project-3"
   region  = "us-west1"
+  # For RT Inventory this is needed as a workaround due to: https://github.com/GoogleCloudPlatform/dlp-pdf-redaction/issues/25
+  billing_project = "org-child-project-3"
+  user_project_override = true
 }
 
 module "onboarding" {
