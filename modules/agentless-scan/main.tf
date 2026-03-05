@@ -18,6 +18,15 @@ locals {
     # disks
     "compute.disks.list",
     "compute.disks.get",
+    # workload discovery (best-effort; used by some backends/health checks)
+    "cloudfunctions.locations.list",
+    "cloudfunctions.functions.get",
+    "cloudfunctions.functions.list",
+    "run.locations.list",
+    "run.services.get",
+    "run.services.list",
+    "container.clusters.get",
+    "container.clusters.list",
   ]
   host_scan_permissions = [
     # general stuff
@@ -98,6 +107,21 @@ resource "google_service_account_iam_member" "controller_custom" {
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.aws_account/${data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id}"
 }
 
+resource "google_service_account_iam_member" "controller_custom_token_creator" {
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? 1 : 0
+
+  lifecycle {
+    precondition {
+      condition     = (data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id != null)
+      error_message = "Cannot provide empty sysdig backend cloud_id"
+    }
+  }
+
+  service_account_id = google_service_account.controller.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.aws_account/${data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id}"
+}
+
 resource "google_iam_workload_identity_pool_provider" "agentless_gcp" {
   count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? 1 : 0
 
@@ -138,6 +162,21 @@ resource "google_service_account_iam_member" "controller_custom_gcp" {
 
   service_account_id = google_service_account.controller.name
   role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.sa_id/${data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id}"
+}
+
+resource "google_service_account_iam_member" "controller_custom_gcp_token_creator" {
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? 1 : 0
+
+  lifecycle {
+    precondition {
+      condition     = (data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id != null)
+      error_message = "Cannot provide empty sysdig backend cloud_id"
+    }
+  }
+
+  service_account_id = google_service_account.controller.name
+  role               = "roles/iam.serviceAccountTokenCreator"
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.sa_id/${data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id}"
 }
 
