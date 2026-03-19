@@ -112,7 +112,7 @@ variable "exclude_logs_filter" {
       filter      = "protoPayload.methodName=~\"^(io\\.k8s|io\\.traefik|us\\.containo|io\\.x-k8s|io\\.gke|org\\.projectcalico|io\\.openshift|io\\.istio)\" AND protoPayload.methodName!~\"secret\""
     },
     {
-      name        = "ciulium_control_plane"
+      name        = "cilium_control_plane"
       description = "Exclude operations on Cilium"
       filter      = "protoPayload.methodName=~\"^io\\.cilium\" AND protoPayload.methodName!~\"identities\""
     },
