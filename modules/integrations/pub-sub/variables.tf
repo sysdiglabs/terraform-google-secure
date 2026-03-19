@@ -114,7 +114,7 @@ variable "exclude_logs_filter" {
     {
       name        = "ciulium_control_plane"
       description = "Exclude operations on Cilium"
-      filter      = "protoPayload.methodName=~\"^io\\.cilium\" AND protoPayload.methodName!~\"identitites\""
+      filter      = "protoPayload.methodName=~\"^io\\.cilium\" AND protoPayload.methodName!~\"identities\""
     },
     {
       name        = "monitoring_queries"
