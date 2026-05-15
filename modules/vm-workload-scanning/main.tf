@@ -114,7 +114,7 @@ resource "google_iam_workload_identity_pool_provider" "agentless_gcp" {
 }
 
 resource "google_service_account_iam_member" "controller_binding_gcp" {
-  count   = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? 1 : 0
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? 1 : 0
 
   service_account_id = google_service_account.controller.name
   role               = "roles/iam.workloadIdentityUser"
