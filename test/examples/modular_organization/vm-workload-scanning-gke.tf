@@ -13,5 +13,5 @@ resource "sysdig_secure_cloud_auth_account_feature" "config_gke" {
   type       = "FEATURE_SECURE_WORKLOAD_SCANNING_KUBERNETES"
   enabled    = true
   components = [module.vm_workload_scanning.vm_workload_scanning_component_id]
-  depends_on = [module.vm_workload_scanning]
+  depends_on = [module.vm_workload_scanning, module.vm_workload_scanning.component_ready]
 }
