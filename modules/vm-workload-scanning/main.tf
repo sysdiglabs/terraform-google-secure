@@ -3,16 +3,16 @@
 #-----------------------------------------------------------------------------------------
 data "sysdig_secure_agentless_scanning_assets" "assets" {}
 
+data "google_project" "project" {
+  project_id = var.project_id
+}
+
 locals {
   suffix = random_id.suffix.hex
 }
 
 resource "random_id" "suffix" {
   byte_length = 3
-}
-
-data "google_project" "project" {
-  project_id = var.project_id
 }
 
 data "sysdig_secure_trusted_cloud_identity" "trusted_identity" {
@@ -40,8 +40,21 @@ resource "google_project_iam_custom_role" "controller" {
     "storage.buckets.list",
     "storage.objects.list",
 
-    # workload identity federation
-    "iam.serviceAccounts.getAccessToken",
+    # cloud functions discovery permissions
+    "cloudfunctions.locations.list",
+    "cloudfunctions.functions.get",
+    "cloudfunctions.functions.list",
+
+    # (optional but commonly needed for 2nd gen / dependency graph resolution)
+    "run.locations.list",
+    "run.jobs.get",
+    "run.jobs.list",
+    "run.services.get",
+    "run.services.list",
+
+    # gke discovery permissions (needed for Kubernetes workload scanning)
+    "container.clusters.get",
+    "container.clusters.list",
   ]
 }
 
@@ -52,6 +65,30 @@ resource "google_project_iam_binding" "controller_binding" {
   members = [
     "serviceAccount:${google_service_account.controller.email}",
   ]
+}
+
+resource "google_service_account_iam_member" "controller_binding" {
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? 1 : 0
+
+  service_account_id = google_service_account.controller.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.aws_account/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}"
+}
+
+resource "google_service_account_iam_member" "controller_wif_token_creator" {
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? 1 : 0
+
+  service_account_id = google_service_account.controller.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.aws_account/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}"
+}
+
+resource "google_service_account_iam_member" "controller_wif_token_creator_gcp" {
+  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "gcp" ? 1 : 0
+
+  service_account_id = google_service_account.controller.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.sa_id/${data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id}"
 }
 
 resource "google_iam_workload_identity_pool" "agentless" {
@@ -81,14 +118,6 @@ resource "google_iam_workload_identity_pool_provider" "agentless" {
   aws {
     account_id = data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id
   }
-}
-
-resource "google_service_account_iam_member" "controller_binding" {
-  count = data.sysdig_secure_agentless_scanning_assets.assets.backend.type == "aws" ? 1 : 0
-
-  service_account_id = google_service_account.controller.name
-  role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.aws_account/${data.sysdig_secure_trusted_cloud_identity.trusted_identity.aws_account_id}"
 }
 
 resource "google_iam_workload_identity_pool_provider" "agentless_gcp" {
@@ -121,6 +150,23 @@ resource "google_service_account_iam_member" "controller_binding_gcp" {
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.sa_id/${data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id}"
 }
 
+# wait for IAM/WIF propagation before registering the component in Sysdig,
+# otherwise discovery may work while scan initialization still races and misses workloads
+resource "time_sleep" "wait_for_apply_google_permissions" {
+  depends_on = [
+    google_project_iam_binding.controller_binding,
+    google_service_account_iam_member.controller_binding,
+    google_service_account_iam_member.controller_wif_token_creator,
+    google_service_account_iam_member.controller_binding_gcp,
+    google_service_account_iam_member.controller_wif_token_creator_gcp,
+    google_iam_workload_identity_pool_provider.agentless,
+    google_iam_workload_identity_pool_provider.agentless_gcp,
+    google_organization_iam_member.controller,
+  ]
+
+  create_duration = "30s"
+}
+
 #--------------------------------------------------------------------------------------------------------------
 # Call Sysdig Backend to add the service-principal integration for VM Workload Scanning to the Sysdig Cloud Account
 #--------------------------------------------------------------------------------------------------------------
@@ -147,7 +193,10 @@ resource "sysdig_secure_cloud_auth_account_component" "google_service_principal"
     google_iam_workload_identity_pool_provider.agentless,
     google_iam_workload_identity_pool_provider.agentless_gcp,
     google_service_account_iam_member.controller_binding,
+    google_service_account_iam_member.controller_wif_token_creator,
     google_service_account_iam_member.controller_binding_gcp,
+    google_service_account_iam_member.controller_wif_token_creator_gcp,
     google_organization_iam_member.controller,
+    time_sleep.wait_for_apply_google_permissions,
   ]
 }

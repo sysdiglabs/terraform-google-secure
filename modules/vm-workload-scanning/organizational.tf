@@ -29,7 +29,22 @@ resource "google_organization_iam_custom_role" "custom_role" {
     "storage.objects.get",
     "storage.buckets.list",
     "storage.objects.list",
-    "iam.serviceAccounts.getAccessToken"
+
+    # cloud functions discovery permissions
+    "cloudfunctions.locations.list",
+    "cloudfunctions.functions.get",
+    "cloudfunctions.functions.list",
+
+    # (optional but commonly needed for 2nd gen / dependency graph resolution)
+    "run.locations.list",
+    "run.jobs.get",
+    "run.jobs.list",
+    "run.services.get",
+    "run.services.list",
+
+    # gke discovery permissions (needed for Kubernetes workload scanning)
+    "container.clusters.get",
+    "container.clusters.list",
   ]
 }
 
