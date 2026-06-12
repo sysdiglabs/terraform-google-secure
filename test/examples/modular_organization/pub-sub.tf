@@ -13,6 +13,8 @@ module "pub-sub" {
   install_gcp_api        = true
   disable_api_on_destroy = false
 
+  enable_real_time_inventory = true
+
   ingestion_sink_filter = "protoPayload.@type = \"type.googleapis.com/google.cloud.audit.AuditLog\" (protoPayload.methodName!~ \"\\.(get|list)$\" OR protoPayload.serviceName != (\"k8s.io\" and \"storage.googleapis.com\"))"
   audit_log_config = [
     {

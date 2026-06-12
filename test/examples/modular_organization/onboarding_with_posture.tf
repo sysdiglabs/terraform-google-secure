@@ -4,6 +4,10 @@ terraform {
       source  = "sysdiglabs/sysdig"
       version = "~> 3.3"
     }
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = "~> 7.7"
+    }
   }
 }
 
@@ -15,6 +19,18 @@ provider "sysdig" {
 provider "google" {
   project = "org-child-project-3"
   region  = "us-west1"
+  # For RT Inventory this is needed as a workaround due to: https://github.com/GoogleCloudPlatform/dlp-pdf-redaction/issues/25
+  billing_project       = "org-child-project-3"
+  user_project_override = true
+}
+
+# Required by the pub-sub module when enable_real_time_inventory = true
+# (google_project_service_identity.cloud_asset_sa uses provider = google-beta)
+provider "google-beta" {
+  project               = "org-child-project-3"
+  region                = "us-west1"
+  billing_project       = "org-child-project-3"
+  user_project_override = true
 }
 
 module "onboarding" {

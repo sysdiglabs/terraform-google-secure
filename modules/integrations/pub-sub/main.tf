@@ -246,6 +246,45 @@ resource "time_sleep" "wait_for_apply_google_permissions" {
   create_duration = "30s"
 }
 
+resource "google_cloud_asset_project_feed" "asset_feed" {
+  # Only for non-organizational installs; organizational installs use google_cloud_asset_organization_feed in organizational.tf
+  count = var.enable_real_time_inventory && !var.is_organizational ? 1 : 0
+
+  project      = var.project_id
+  feed_id      = "sysdig-asset-feed-${local.suffix}"
+  content_type = "RESOURCE"
+  # ".*" is an RE2 regex matching all asset types. The Cloud Asset feed API requires
+  # at least one of asset_types/asset_names to be set, so an empty list is invalid.
+  asset_types = [".*"]
+  feed_output_config {
+    pubsub_destination {
+      topic = google_pubsub_topic.ingestion_topic.id
+    }
+  }
+  depends_on = [
+    google_pubsub_topic.ingestion_topic,
+    google_pubsub_topic_iam_member.cloud_asset_publisher,
+  ]
+}
+
+resource "google_project_service_identity" "cloud_asset_sa" {
+  count = var.enable_real_time_inventory ? 1 : 0
+
+  provider   = google-beta
+  project    = var.project_id
+  service    = "cloudasset.googleapis.com"
+  depends_on = [google_project_service.pub_sub_apis]
+}
+
+resource "google_pubsub_topic_iam_member" "cloud_asset_publisher" {
+  count = var.enable_real_time_inventory ? 1 : 0
+
+  project = google_pubsub_topic.ingestion_topic.project
+  topic   = google_pubsub_topic.ingestion_topic.name
+  role    = "roles/pubsub.publisher"
+  member  = "serviceAccount:${google_project_service_identity.cloud_asset_sa[0].email}"
+}
+
 #-----------------------------------------------------------------------------------------------------------------------------------------
 # Call Sysdig Backend to add the pub-sub integration to the Sysdig Cloud Account
 #
@@ -257,7 +296,7 @@ resource "sysdig_secure_cloud_auth_account_component" "gcp_pubsub_datasource" {
   account_id = var.sysdig_secure_account_id
   type       = "COMPONENT_WEBHOOK_DATASOURCE"
   instance   = "secure-runtime"
-  version    = "v0.1.0"
+  version    = "v0.1.1"
   webhook_datasource_metadata = jsonencode({
     gcp = {
       webhook_datasource = {
