@@ -121,6 +121,18 @@ resource "google_service_account_iam_member" "controller_binding_gcp" {
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.agentless.name}/attribute.sa_id/${data.sysdig_secure_agentless_scanning_assets.assets.backend.cloud_id}"
 }
 
+# depends_on only orders the API calls; GCP still needs time to propagate the bindings before the backend exchanges the WIF token
+resource "time_sleep" "wait_for_apply_google_permissions" {
+  depends_on = [
+    google_project_iam_binding.controller_binding,
+    google_service_account_iam_member.controller_binding,
+    google_service_account_iam_member.controller_binding_gcp,
+    google_organization_iam_member.controller,
+  ]
+
+  create_duration = "120s"
+}
+
 #--------------------------------------------------------------------------------------------------------------
 # Call Sysdig Backend to add the service-principal integration for VM Workload Scanning to the Sysdig Cloud Account
 #--------------------------------------------------------------------------------------------------------------
@@ -149,5 +161,6 @@ resource "sysdig_secure_cloud_auth_account_component" "google_service_principal"
     google_service_account_iam_member.controller_binding,
     google_service_account_iam_member.controller_binding_gcp,
     google_organization_iam_member.controller,
+    time_sleep.wait_for_apply_google_permissions,
   ]
 }
