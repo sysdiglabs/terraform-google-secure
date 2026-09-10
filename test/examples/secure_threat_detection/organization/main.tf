@@ -67,6 +67,8 @@ terraform {
 provider "sysdig" {
   sysdig_secure_url       = "test_sysdig_secure_endpoint"
   sysdig_secure_api_token = "test_sysdig_secure_api_token"
+  # default; set to true for large organizations, whose create outlasts the API timeout
+  sysdig_secure_org_api_async = false
 }
 
 resource "sysdig_secure_cloud_auth_account" "gcp_project_mytestproject" {
