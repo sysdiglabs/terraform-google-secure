@@ -2,7 +2,7 @@ terraform {
   required_providers {
     sysdig = {
       source  = "sysdiglabs/sysdig"
-      version = "~> 3.3"
+      version = "~> 3.11"
     }
     google-beta = {
       source  = "hashicorp/google-beta"
@@ -14,6 +14,8 @@ terraform {
 provider "sysdig" {
   sysdig_secure_url       = "https://secure-staging.sysdig.com"
   sysdig_secure_api_token = "API_TOKEN"
+  # default; set to true for large organizations, whose create outlasts the API timeout
+  sysdig_secure_org_api_async = false
 }
 
 provider "google" {
