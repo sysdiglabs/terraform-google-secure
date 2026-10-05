@@ -68,7 +68,7 @@ resource "google_logging_organization_sink" "ingestion_sink" {
   lifecycle {
     postcondition {
       condition     = self.writer_identity == local.sink_writer_identity
-      error_message = "The sink writes as ${self.writer_identity}, not as the granted ${local.sink_writer_identity}."
+      error_message = "The sink writes as ${self.writer_identity}, not as the granted ${local.sink_writer_identity}. Recreate it with terraform apply -replace='module.<name>.google_logging_organization_sink.ingestion_sink[0]'."
     }
   }
 }

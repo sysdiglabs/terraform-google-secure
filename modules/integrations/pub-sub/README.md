@@ -53,6 +53,7 @@ No modules.
 | [google_pubsub_topic.deadletter_topic](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_topic.html)                                                             | resource    |
 | [google_logging_project_sink.ingestion_sink](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/logging_project_sink)                                                    | resource    |
 | [google_pubsub_topic_iam_member.publisher_iam_member](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_topic_iam#google_pubsub_topic_iam_member)                | resource    |
+| [time_sleep.wait_for_sink_drain](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep)                                                                                 | resource    |
 | [google_service_account.push_auth](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_service_account)                                                            | resource    |
 | [google_service_account_iam_binding.push_auth_binding](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_service_account_iam#google_service_account_iam_binding) | resource    |
 | [google_pubsub_subscription.ingestion_topic_push_subscription](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_subscription.html)                              | resource    |
