@@ -141,6 +141,18 @@ variable "wait_after_basic_seconds" {
   default     = 30
 }
 
+variable "sink_drain_duration" {
+  type        = string
+  description = "How long the Pub/Sub topic and its publisher grant outlive the sink on destroy, since the Log Router keeps routing through a deleted sink for a few minutes. Set to \"0s\" to skip the wait and accept a Cloud Logging sink error email on teardown. Destroy uses the applied value, so apply a change before destroying."
+  default     = "10m"
+  nullable    = false
+
+  validation {
+    condition     = can(regex("^[0-9]+(ms|s|m|h)$", var.sink_drain_duration))
+    error_message = "sink_drain_duration must be a number followed by ms, s, m or h, such as \"5m\", \"90s\" or \"0s\"."
+  }
+}
+
 variable "enable_real_time_inventory" {
   type        = bool
   description = "When true, enables the required resources for real time inventory to work."

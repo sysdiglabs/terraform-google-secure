@@ -7,6 +7,12 @@ data "google_organization" "org" {
   domain = var.organization_domain
 }
 
+# Organization sinks write as the organization's Logging service agent; reading the settings also provisions it.
+data "google_logging_organization_settings" "settings" {
+  count        = var.is_organizational ? 1 : 0
+  organization = data.google_organization.org[0].org_id
+}
+
 #-----------------------------------------------------------------------------------------
 # Audit Logs
 #-----------------------------------------------------------------------------------------
@@ -56,6 +62,15 @@ resource "google_logging_organization_sink" "ingestion_sink" {
   # NOTE: The include_children attribute is set to true in order to ingest data
   # even from potential sub-organizations
   include_children = true
+
+  depends_on = [time_sleep.wait_for_sink_drain]
+
+  lifecycle {
+    postcondition {
+      condition     = self.writer_identity == local.sink_writer_identity
+      error_message = "The sink writes as ${self.writer_identity}, not as the granted ${local.sink_writer_identity}."
+    }
+  }
 }
 
 # creating custom role with organization-level permissions to access data ingestion resources

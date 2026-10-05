@@ -24,6 +24,12 @@ data "sysdig_secure_tenant_external_id" "external_id" {}
 
 data "sysdig_secure_cloud_ingestion_assets" "assets" {}
 
+# Sinks of a project write as its Logging service agent; reading the settings also provisions that agent.
+data "google_logging_project_settings" "settings" {
+  count   = var.is_organizational ? 0 : 1
+  project = var.project_id
+}
+
 #-----------------------------------------------------------------------------------------
 # These locals indicate the suffix to create unique name for resources
 #-----------------------------------------------------------------------------------------
@@ -120,13 +126,36 @@ resource "google_logging_project_sink" "ingestion_sink" {
 
   # NOTE: Used to create a dedicated writer identity and not using the default one
   unique_writer_identity = true
+
+  depends_on = [time_sleep.wait_for_sink_drain]
+
+  lifecycle {
+    postcondition {
+      condition     = self.writer_identity == local.sink_writer_identity
+      error_message = "The sink writes as ${self.writer_identity}, not as the granted ${local.sink_writer_identity}."
+    }
+  }
 }
 
+locals {
+  sink_writer_identity = "serviceAccount:${var.is_organizational ? data.google_logging_organization_settings.settings[0].logging_service_account_id : data.google_logging_project_settings.settings[0].logging_service_account_id}"
+}
+
+# Granted to the Logging service agent rather than read off the sink's writer_identity, so that the sink
+# depends on the grant and not the other way around.
 resource "google_pubsub_topic_iam_member" "publisher_iam_member" {
   project = google_pubsub_topic.ingestion_topic.project
   topic   = google_pubsub_topic.ingestion_topic.name
   role    = "roles/pubsub.publisher"
-  member  = var.is_organizational ? google_logging_organization_sink.ingestion_sink[0].writer_identity : google_logging_project_sink.ingestion_sink[0].writer_identity
+  member  = local.sink_writer_identity
+}
+
+# The Log Router keeps routing through a deleted sink for a few minutes, so the grant and the topic must outlive
+# the sink by that long, or GCP emails the project owners a topic_not_found sink error on every offboard.
+resource "time_sleep" "wait_for_sink_drain" {
+  destroy_duration = var.sink_drain_duration
+
+  depends_on = [google_pubsub_topic_iam_member.publisher_iam_member]
 }
 
 #-----------------------------------------------------------------------------------------
