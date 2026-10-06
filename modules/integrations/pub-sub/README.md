@@ -26,15 +26,15 @@ This module will also deploy a Webhook Datasource Component in Sysdig Backend fo
 
 | Name                                                                      | Version   |
 |---------------------------------------------------------------------------|-----------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0  |
-| <a name="requirement_google"></a> [google](#requirement\_google)          | >= 4.21.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0  |
+| <a name="requirement_google"></a> [google](#requirement\_google)          | >= 5.9.0  |
 | <a name="requirement_sysdig"></a> [sysdig](#requirement\_sysdig)          |           |
 
 ## Providers
 
 | Name                                                             | Version   |
 |------------------------------------------------------------------|-----------|
-| <a name="provider_google"></a> [google](#provider\_google)       | >= 4.21.0 |
+| <a name="provider_google"></a> [google](#provider\_google)       | >= 5.9.0  |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.1    |
 | <a name="requirement_sysdig"></a> [sysdig](#requirement\_sysdig) |           |
 
@@ -53,6 +53,7 @@ No modules.
 | [google_pubsub_topic.deadletter_topic](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_topic.html)                                                             | resource    |
 | [google_logging_project_sink.ingestion_sink](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/logging_project_sink)                                                    | resource    |
 | [google_pubsub_topic_iam_member.publisher_iam_member](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_topic_iam#google_pubsub_topic_iam_member)                | resource    |
+| [time_sleep.wait_for_sink_drain](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep)                                                                                 | resource    |
 | [google_service_account.push_auth](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_service_account)                                                            | resource    |
 | [google_service_account_iam_binding.push_auth_binding](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_service_account_iam#google_service_account_iam_binding) | resource    |
 | [google_pubsub_subscription.ingestion_topic_push_subscription](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/pubsub_subscription.html)                              | resource    |
@@ -68,6 +69,8 @@ No modules.
 | [sysdig_secure_cloud_ingestion_assets](https://registry.terraform.io/providers/sysdiglabs/sysdig/latest/docs/data-sources/secure_cloud_ingestion_assets)                                             | data source |
 | [google_project.project](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/project)                                                                                  | data source |
 | [google_organization.org](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/organization)                                                                            | data source |
+| [google_logging_project_settings.settings](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/logging_project_settings)                                               | data source |
+| [google_logging_organization_settings.settings](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/logging_organization_settings)                                     | data source |
 | [google_organization_iam_audit_config.audit_config](https://registry.terraform.io/providers/hashicorp/google/3.24.0/docs/resources/google_organization_iam_audit_config)                             | resource    |
 | [google_logging_organization_sink.ingestion_sink](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/logging_organization_sink)                                          | resoruce    |
 | [google_organization_iam_custom_role.custom_ingestion_auth_role](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_organization_iam_custom_role)                 | resource    |
@@ -92,6 +95,7 @@ No modules.
 | <a name="ingestion_sink_filter"></a> [ingestion\_sink\_filter](#input\_ingestion\_sink\_filter)                      | Filter the Sink is set up with. Ingests AuditLogs by default.                                                                        | `string`                                                                                                                                                                                       | `protoPayload.@type = "type.googleapis.com/google.cloud.audit.AuditLog"`                                                                                                                                                                                                        |    no    |
 | <a name="input_exclude_logs_filter"></a> [exclude\_logs\_filter](#input\_exclude\_logs\_filter)                      | Filter to exclude logs from ingestion. Default is to ingest all google.cloud.audit.AuditLog logs. with no exclusions.                | <pre>list(object({<br>    name        = string,<br>    description = optional(string),<br>    filter      = string,<br>    disabled    = optional(bool)<br>  }))</pre>                         | `[]`                                                                                                                                                                                                                                                                            |    no    |
 | <a name="input_sysdig_secure_account_id"></a> [sysdig\_secure\_account\_id](#input\_sysdig\_secure\_account\_id)     | ID of the Sysdig Cloud Account to enable Event Bridge integration for (incase of organization, ID of the Sysdig management account)  | `string`                                                                                                                                                                                       | `""`                                                                                                                                                                                                                                                                            |    no    |
+| <a name="input_sink_drain_duration"></a> [sink\_drain\_duration](#input\_sink\_drain\_duration)                      | How long the Pub/Sub topic and its publisher grant outlive the sink on destroy. `"0s"` skips the wait. Destroy uses the applied value| `string`                                                                                                                                                                                       | `"10m"`                                                                                                                                                                                                                                                                         |    no    |
 
 ## Outputs
 
